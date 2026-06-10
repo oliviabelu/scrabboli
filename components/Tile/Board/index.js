@@ -50,6 +50,7 @@ const categories = {
   fk: "3B",
   gb: "3B",
   gn: "3B",
+  hh: "start",
   ib: "3B",
   in: "3B",
   je: "3B",

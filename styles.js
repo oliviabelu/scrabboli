@@ -9,16 +9,20 @@ export default createGlobalStyle`
 
 --tile-player: #5bb644;
 --tile-board: #d8d8d8;
---tile-double-letter: #fff59b;
+
+--tile-start: #ffe138;
+--tile-start-color: #8b7700;
+
+--tile-double-letter: #fffacb;
 --tile-double-letter-color: #c9b500;
 
---tile-triple-letter: #9cfab8;
+--tile-triple-letter: #cfffdd;
 --tile-triple-letter-color: #009e2f;
 
---tile-double-word: #8bd1fa;
+--tile-double-word: #bee4fa;
 --tile-double-word-color: #0065a0;
 
---tile-triple-word: #dfa7ff;
+--tile-triple-word: #e8c6fc;
 --tile-triple-word-color: #6600a1;
 
 --tile-border-radius: 0.2rem;

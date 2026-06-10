@@ -29,6 +29,14 @@ const StyledTile = styled.div`
     `}
 
   ${(props) =>
+    props.$category === "start" &&
+    css`
+      background-color: var(--tile-start);
+      color: var(--tile-start-color);
+      font-size: 10px;
+    `}
+
+  ${(props) =>
     props.$category === "2B" &&
     css`
       background-color: var(--tile-double-letter);
