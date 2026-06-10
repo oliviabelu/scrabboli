@@ -90,7 +90,6 @@ export default function Board() {
           return <Tile key={key} category={category} />;
         })
       )}
-      ;
     </StyledBoard>
   );
 }
