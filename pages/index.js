@@ -5,7 +5,7 @@ export default function HomePage() {
     <>
       <h1>Scrabboli</h1>
 
-      <Board></Board>
+      <Board />
     </>
   );
 }
