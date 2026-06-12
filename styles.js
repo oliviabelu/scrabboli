@@ -5,27 +5,30 @@ export default createGlobalStyle`
 :root {
 
 //variables
---tile-size: 6vw;
+--brick-size: 6vw;
+--brick-border-radius: 0.2rem;
 
---tile-player: #5bb644;
---tile-board: #d8d8d8;
+--cell: #d8d8d8;
 
---tile-start: #ffe138;
---tile-start-color: #8b7700;
+--tile: #5bb644;
 
---tile-double-letter: #fffacb;
---tile-double-letter-color: #c9b500;
 
---tile-triple-letter: #cfffdd;
---tile-triple-letter-color: #009e2f;
 
---tile-double-word: #bee4fa;
---tile-double-word-color: #0065a0;
+--cell-start: #ffe138;
+--cell-start-color: #8b7700;
 
---tile-triple-word: #e8c6fc;
---tile-triple-word-color: #6600a1;
+--cell-double-letter: #fffacb;
+--cell-double-letter-color: #c9b500;
 
---tile-border-radius: 0.2rem;
+--cell-triple-letter: #cfffdd;
+--cell-triple-letter-color: #009e2f;
+
+--cell-double-word: #bee4fa;
+--cell-double-word-color: #0065a0;
+
+--cell-triple-word: #e8c6fc;
+--cell-triple-word-color: #6600a1;
+
 
 --board-gap: 1px;
 }
