@@ -1,0 +1,104 @@
+[
+  {
+    "status": "finished",
+    "createdAt": "2026-05-17",
+    "updatedAt": "2026-06-01",
+    "players": [
+      {
+        "playerId": { "$oid": "6a2be687ba4eac95d5d6ac1c" },
+        "score": 150,
+        "tiles": ["A", "B", "C"],
+        "isCurrentTurn": false
+      }
+    ],
+    "board": {
+      "cells": [
+        {
+          "row": "7",
+          "column": "6",
+          "letter": "N",
+          "playedBy": { "$oid": "6a2be687ba4eac95d5d6ac1c" }
+        },
+        {
+          "row": "7",
+          "column": "7",
+          "letter": "A",
+          "playedBy": { "$oid": "6a2be687ba4eac95d5d6ac1c" }
+        }
+      ]
+    },
+    "tilebag": [""],
+    "moves": [
+      {
+        "playerId": { "$oid": "6a2be687ba4eac95d5d6ac1c" },
+        "word": "NA",
+        "tiles": [
+          {
+            "row": 7,
+            "column": 6,
+            "letter": "N"
+          },
+          {
+            "row": 7,
+            "column": 7,
+            "letter": "A"
+          }
+        ],
+        "score": 2,
+        "timestamp": "2026-06-01"
+      }
+    ],
+    "winnerId": { "$oid": "6a2be687ba4eac95d5d6ac1c" }
+  },
+  {
+    "status": "finished",
+    "createdAt": "2026-05-16",
+    "updatedAt": "2026-06-02",
+    "players": [
+      {
+        "playerId": { "$oid": "6a2be687ba4eac95d5d6ac1d" },
+        "score": 150,
+        "tiles": ["D", "E", "F"],
+        "isCurrentTurn": false
+      }
+    ],
+    "board": {
+      "cells": [
+        {
+          "row": 7,
+          "column": 6,
+          "letter": "N",
+          "playedBy": { "$oid": "6a2be687ba4eac95d5d6ac1d" }
+        },
+        {
+          "row": 7,
+          "column": 7,
+          "letter": "E",
+          "playedBy": { "$oid": "6a2be687ba4eac95d5d6ac1d" }
+        }
+      ]
+    },
+    "tilebag": [""],
+    "moves": [
+      {
+        "playerId": { "$oid": "6a2be687ba4eac95d5d6ac1d" },
+        "word": "NA",
+        "tiles": [
+          {
+            "row": "7",
+            "column": "6",
+            "letter": "N"
+          },
+          {
+            "row": "7",
+            "column": "7",
+            "letter": "E"
+          }
+        ],
+        "score": 2,
+        "timestamp": "2026-06-02"
+      }
+    ],
+    "winnerId": { "$oid": "6a2be687ba4eac95d5d6ac1d" }
+  }
+]

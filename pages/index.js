@@ -1,9 +1,11 @@
+import useSWR from "swr";
+import { useState, useEffect, use } from "react";
 import Board from "@/components/Board";
-
-import { useState, useEffect } from "react";
 
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
+
+  const { data: gameData, isLoading, error } = useSWR("/api/games");
 
   useEffect(() => {
     async function loadWords() {
@@ -16,7 +18,6 @@ export default function HomePage() {
         const wordArray = await response.json();
 
         const set = new Set(wordArray.map((entry) => entry.word));
-        console.log(set);
         setWordSet(set);
       } catch (error) {
         console.error(error);
@@ -26,11 +27,20 @@ export default function HomePage() {
     loadWords();
   }, []);
 
+  if (isLoading) return <p>Loading...</p>;
+
+  if (error) {
+    return <h1>Oops… something went wrong.</h1>;
+  }
+  if (!gameData) {
+    return <h1>No games.</h1>;
+  }
+
   return (
     <>
       <h1>Scrabboli</h1>
 
-      <Board wordSet={wordSet} />
+      <Board wordSet={wordSet} gameData={gameData} />
     </>
   );
 }
