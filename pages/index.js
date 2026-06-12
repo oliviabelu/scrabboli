@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import Board from "@/components/Board";
 
 export default function HomePage() {
