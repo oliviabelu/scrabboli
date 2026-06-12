@@ -21,7 +21,6 @@ export default function HomePage() {
     loadWords();
   }, []);
 
-  console.log(wordSet);
   return (
     <>
       <h1>Scrabboli</h1>
