@@ -79,7 +79,7 @@ const categories = {
   ol: "3W",
 };
 
-export default function Board() {
+export default function Board({ wordSet }) {
   return (
     <StyledBoard>
       {tiles.map((tileRow) =>
