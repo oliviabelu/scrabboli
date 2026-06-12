@@ -1,4 +1,4 @@
-import Tile from "..";
+import Tile from "../Tile";
 import styled from "styled-components";
 
 const tiles = [

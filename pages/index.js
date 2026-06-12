@@ -1,4 +1,4 @@
-import Board from "@/components/Tile/Board";
+import Board from "@/components/Board";
 
 import { useState, useEffect } from "react";
 
