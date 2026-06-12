@@ -42,7 +42,7 @@ const gameSchema = new Schema(
     ],
     winnerId: { type: Schema.Types.ObjectId, ref: "Player" },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 const Game = mongoose.models.Game || mongoose.model("Game", gameSchema);
 

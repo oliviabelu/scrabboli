@@ -14,14 +14,14 @@
     "board": {
       "cells": [
         {
-          "row": "7",
-          "column": "6",
+          "row": 7,
+          "column": 6,
           "letter": "N",
           "playedBy": { "$oid": "6a2be687ba4eac95d5d6ac1c" }
         },
         {
-          "row": "7",
-          "column": "7",
+          "row": 7,
+          "column": 7,
           "letter": "A",
           "playedBy": { "$oid": "6a2be687ba4eac95d5d6ac1c" }
         }
@@ -85,13 +85,13 @@
         "word": "NA",
         "tiles": [
           {
-            "row": "7",
-            "column": "6",
+            "row": 7,
+            "column": 6,
             "letter": "N"
           },
           {
-            "row": "7",
-            "column": "7",
+            "row": 7,
+            "column": 7,
             "letter": "E"
           }
         ],
