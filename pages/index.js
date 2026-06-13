@@ -10,11 +10,14 @@ function createTilebag() {
   );
 }
 
+const tileNumbers = [1, 2, 3, 4, 5, 6, 7];
+
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
   const [tilebag, setTilebag] = useState(createTilebag);
-  const [chosenTile, setChosenTile] = useState(null);
   const [cells, setCells] = useState(CATEGORIES);
+  const [chosenTile, setChosenTile] = useState(null);
+  const [rackTiles, setRackTiles] = useState([]);
 
   const { data: gameData, isLoading, error } = useSWR("/api/games");
 
@@ -38,7 +41,16 @@ export default function HomePage() {
     loadWords();
   }, []);
 
-  function handleUpdateTilebag(chosenTiles) {
+  useEffect(() => {
+    const chosenTiles = tileNumbers.map(() => {
+      const randomIndex = Math.floor(Math.random() * tilebag.length);
+      return tilebag[randomIndex];
+    });
+    setRackTiles(chosenTiles);
+    updateTilebag(chosenTiles);
+  }, []);
+
+  function updateTilebag(chosenTiles) {
     let updatedTilebag = tilebag;
 
     chosenTiles.forEach((chosenTile) => {
@@ -91,11 +103,7 @@ export default function HomePage() {
         cells={cells}
         handleClick={handleCellClick}
       />
-      <Rack
-        tilebag={tilebag}
-        onUpdateTilebag={handleUpdateTilebag}
-        handleClick={handleTileClick}
-      />
+      <Rack rackTiles={rackTiles} handleClick={handleTileClick} />
     </>
   );
 }
