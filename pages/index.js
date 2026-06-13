@@ -4,13 +4,15 @@ import Board from "@/components/Board";
 import { TILES } from "@/constants/gameConstants";
 import Rack from "@/components/Rack";
 
+function createTilebag() {
+  return Object.entries(TILES).flatMap(([letter, { count, value }]) =>
+    Array(count).fill({ letter, value })
+  );
+}
+
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
-  const [tilebag, setTilebag] = useState(
-    Object.entries(TILES).flatMap(([letter, { count }]) =>
-      Array(count).fill(letter)
-    )
-  );
+  const [tilebag, setTilebag] = useState(createTilebag);
 
   const { data: gameData, isLoading, error } = useSWR("/api/games");
 

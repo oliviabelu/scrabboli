@@ -13,13 +13,20 @@ export default function Rack({ tilebag }) {
       return tilebag[randomIndex];
     });
     setRackTiles(chosenTiles);
+    updateTilebag(chosenTiles);
   }, []);
+
+  function updateTilebag(tiles) {}
 
   return (
     <StyledTileList>
       {rackTiles.map((rackTile, index) => (
         <li key={index}>
-          <Brick category={"tile"} letter={rackTile} />
+          <Brick
+            category={"tile"}
+            tileLetter={rackTile.letter}
+            tileValue={rackTile.value}
+          />
         </li>
       ))}
     </StyledTileList>
