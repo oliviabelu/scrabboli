@@ -52,8 +52,12 @@ export default function HomePage() {
     setTilebag(updatedTilebag);
   }
 
-  function handleClick(letter) {
+  function handleTileClick(letter) {
     setChosenTile(letter);
+  }
+
+  function handleCellClick(row, column) {
+    console.log("row: ", row, "column: ", column);
   }
 
   if (isLoading) return <p>Loading...</p>;
@@ -69,11 +73,15 @@ export default function HomePage() {
     <>
       <h1>Scrabboli</h1>
 
-      <Board wordSet={wordSet} gameData={gameData} />
+      <Board
+        wordSet={wordSet}
+        gameData={gameData}
+        handleClick={handleCellClick}
+      />
       <Rack
         tilebag={tilebag}
         onUpdateTilebag={handleUpdateTilebag}
-        handleClick={handleClick}
+        handleClick={handleTileClick}
       />
     </>
   );
