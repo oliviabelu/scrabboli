@@ -1,19 +1,27 @@
 import Brick from "../Brick";
-import { CELLS, CATEGORIES } from "@/constants/gameConstants";
+import { CELLNUMBERS } from "@/constants/gameConstants";
 import { StyledBoard } from "./Board.styled";
 
-export default function Board({ wordSet, handleClick }) {
+export default function Board({ wordSet, handleClick, cells }) {
   return (
     <StyledBoard>
-      {CELLS.map((cellRow) =>
-        CELLS.map((cellColumn) => {
+      {CELLNUMBERS.map((cellRow) =>
+        CELLNUMBERS.map((cellColumn) => {
           const key = `${cellRow}-${cellColumn}`;
-          const category = key in CATEGORIES ? CATEGORIES[key] : null;
+          const cellValue = cells[key];
+          const isBoardTile = typeof cells[key] === "object";
+
+          const category = isBoardTile ? "boardTile" : (cellValue ?? null);
+
+          const letter = isBoardTile ? cellValue.letter : "";
+          const value = isBoardTile ? cellValue.value : "";
 
           return (
             <Brick
               key={key}
               category={category}
+              tileLetter={letter}
+              tileValue={value}
               onClick={() => handleClick(cellRow, cellColumn)}
             />
           );

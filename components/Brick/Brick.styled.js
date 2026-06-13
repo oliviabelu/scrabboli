@@ -1,10 +1,28 @@
 import styled, { css } from "styled-components";
 
+export const StyledLetter = styled.div`
+  grid-column: 1;
+  grid-row: 2;
+
+  ${(props) =>
+    props.$category === "tile" &&
+    css`
+      font-size: 1.3rem;
+    `}
+`;
+
+export const StyledValue = styled.div`
+  grid-column: 2;
+  grid-row: 1;
+`;
+
 export const StyledBrick = styled.button`
   width: var(--cell-size);
   height: var(--cell-size);
   border-radius: var(--brick-border-radius) 0;
   margin: var(--cell-margin);
+
+  border: none;
 
   display: flex;
   align-items: center;
@@ -24,6 +42,21 @@ export const StyledBrick = styled.button`
       height: var(--tile-size);
 
       margin: var(--tile-margin);
+
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      grid-template-rows: 1fr 2fr;
+    `}
+
+  ${(props) =>
+    props.$category === "boardTile" &&
+    css`
+      background-color: var(--tile);
+      color: white;
+
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      grid-template-rows: 1fr 2fr;
     `}
 
   ${(props) =>

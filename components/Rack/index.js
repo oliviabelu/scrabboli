@@ -21,6 +21,10 @@ export default function Rack({ tilebag, onUpdateTilebag, handleClick }) {
     onUpdateTilebag(tiles);
   }
 
+  // function handleTileClick(letter) {
+  //   handleClick(letter, index);
+  // }
+
   return (
     <StyledTileList>
       {rackTiles.map((rackTile, index) => (
@@ -29,7 +33,7 @@ export default function Rack({ tilebag, onUpdateTilebag, handleClick }) {
             category={"tile"}
             tileLetter={rackTile.letter}
             tileValue={rackTile.value}
-            onClick={handleClick}
+            onClick={() => handleClick(rackTile.letter, index)}
           />
         </li>
       ))}

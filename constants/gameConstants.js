@@ -1,4 +1,4 @@
-export const CELLS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+export const CELLNUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
 export const CATEGORIES = {
   "1-8": "2B",

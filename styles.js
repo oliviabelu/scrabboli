@@ -7,7 +7,7 @@ export default createGlobalStyle`
 //variables
 --cell-size: 6vw;
 --tile-size: 10vw;
---brick-border-radius: 0.2rem;
+--brick-border-radius: 0.5rem;
 
 --cell: #d8d8d8;
 --cell-margin: 0.05rem;;

@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import { useState, useEffect } from "react";
 import Board from "@/components/Board";
-import { TILES } from "@/constants/gameConstants";
+import { TILES, CATEGORIES } from "@/constants/gameConstants";
 import Rack from "@/components/Rack";
 
 function createTilebag() {
@@ -14,6 +14,7 @@ export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
   const [tilebag, setTilebag] = useState(createTilebag);
   const [chosenTile, setChosenTile] = useState(null);
+  const [cells, setCells] = useState(CATEGORIES);
 
   const { data: gameData, isLoading, error } = useSWR("/api/games");
 
@@ -52,12 +53,23 @@ export default function HomePage() {
     setTilebag(updatedTilebag);
   }
 
-  function handleTileClick(letter) {
-    setChosenTile(letter);
+  function handleTileClick(letter, index) {
+    setChosenTile({ letter: letter, index: index });
   }
 
   function handleCellClick(row, column) {
     console.log("row: ", row, "column: ", column);
+    if (chosenTile) {
+      console.log(
+        "chosen Tile: ",
+        chosenTile.letter,
+        "chosen Cell: ",
+        row,
+        column
+      );
+      setCells({ ...cells, [`${row}-${column}`]: chosenTile });
+      setChosenTile(null);
+    }
   }
 
   if (isLoading) return <p>Loading...</p>;
@@ -76,6 +88,7 @@ export default function HomePage() {
       <Board
         wordSet={wordSet}
         gameData={gameData}
+        cells={cells}
         handleClick={handleCellClick}
       />
       <Rack
