@@ -42,7 +42,7 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    const chosenTiles = tileNumbers.map(() => {
+    const chosenTiles = tileNumbers.map((tileNumber) => {
       const randomIndex = Math.floor(Math.random() * tilebag.length);
       return tilebag[randomIndex];
     });
@@ -79,8 +79,16 @@ export default function HomePage() {
         row,
         column
       );
+      console.log("chosenTile: ", chosenTile);
+      console.log("racktile: ", rackTiles);
       setCells({ ...cells, [`${row}-${column}`]: chosenTile });
+      setRackTiles(
+        rackTiles.map((rackTile, index) =>
+          chosenTile.index === index ? { letter: "", value: "" } : rackTile
+        )
+      );
       setChosenTile(null);
+      // setRackTiles()
     }
   }
 
@@ -92,7 +100,7 @@ export default function HomePage() {
   if (!gameData) {
     return <h1>No games.</h1>;
   }
-
+  console.log(rackTiles);
   return (
     <>
       <h1>Scrabboli</h1>

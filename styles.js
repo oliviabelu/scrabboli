@@ -15,6 +15,8 @@ export default createGlobalStyle`
 --tile: #5bb644;
 --tile-margin: 0.2rem;
 
+--tile-empty : #ffffff;
+
 --cell-start: #ffe138;
 --cell-start-color: #8b7700;
 

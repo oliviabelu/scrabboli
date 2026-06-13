@@ -3,7 +3,9 @@ import { StyledBrick, StyledLetter, StyledValue } from "./Brick.styled";
 export default function Brick({ category, tileLetter, tileValue, onClick }) {
   return (
     <StyledBrick type="button" onClick={onClick} $category={category}>
-      {category === "tile" || category === "boardTile" ? (
+      {category === "tile" ||
+      category === "boardTile" ||
+      category === "emptyTile" ? (
         tileLetter === "?" ? (
           ""
         ) : (

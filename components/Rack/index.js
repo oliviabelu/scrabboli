@@ -7,7 +7,7 @@ export default function Rack({ rackTiles, handleClick }) {
       {rackTiles.map((rackTile, index) => (
         <li key={index}>
           <Brick
-            category={"tile"}
+            category={rackTile.letter === "" ? "emptyTile" : "tile"}
             tileLetter={rackTile.letter}
             tileValue={rackTile.value}
             onClick={() => handleClick(rackTile.letter, index)}
