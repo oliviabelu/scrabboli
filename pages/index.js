@@ -1,8 +1,9 @@
 import useSWR from "swr";
 import { useState, useEffect } from "react";
-import Board from "@/components/Board";
 import { TILES, CATEGORIES } from "@/constants/gameConstants";
+import Board from "@/components/Board";
 import Rack from "@/components/Rack";
+import GameNavBar from "@/components/GameNavBar";
 
 function createTilebag() {
   return Object.entries(TILES).flatMap(([letter, { count, value }]) =>
@@ -18,9 +19,10 @@ export default function HomePage() {
   const [cells, setCells] = useState(CATEGORIES);
   const [chosenTile, setChosenTile] = useState(null);
   const [rackTiles, setRackTiles] = useState([]);
+  const [currentMove, setCurrentMove] = useState([]);
 
   //for later, when data is needed
-  // const { data: gameData, isLoading, error } = useSWR("/api/games");
+  //const { data: gameData, isLoading, error } = useSWR("/api/games");
 
   useEffect(() => {
     async function loadWords() {
@@ -45,7 +47,7 @@ export default function HomePage() {
   useEffect(() => {
     const drawnTiles = tileNumbers.map((tileNumber) => {
       const randomIndex = Math.floor(Math.random() * tilebag.length);
-      return tilebag[randomIndex];
+      return { ...tilebag[randomIndex], isPlayed: false };
     });
     setRackTiles(drawnTiles);
     updateTilebag(drawnTiles);
@@ -75,11 +77,32 @@ export default function HomePage() {
       setCells({ ...cells, [`${row}-${column}`]: chosenTile });
       setRackTiles(
         rackTiles.map((rackTile, index) =>
-          chosenTile.index === index ? { letter: "", value: "" } : rackTile
+          chosenTile.index === index
+            ? { ...rackTile, isPlayed: true }
+            : rackTile
         )
       );
       setChosenTile(null);
+      setCurrentMove([...currentMove, `${row}-${column}`]);
     }
+  }
+
+  function handleRecall() {
+    setRackTiles(
+      rackTiles.map((rackTile) =>
+        rackTile.isPlayed ? { ...rackTile, isPlayed: false } : rackTile
+      )
+    );
+    const recallCells = { ...cells };
+    currentMove.forEach((move) => {
+      if (move in CATEGORIES) {
+        recallCells[move] = CATEGORIES[move];
+      } else {
+        delete recallCells[move];
+      }
+    });
+    setCells(recallCells);
+    setCurrentMove([]);
   }
 
   //for later
@@ -91,6 +114,7 @@ export default function HomePage() {
   // if (!gameData) {
   //   return <h1>No games.</h1>;
   // }
+
   return (
     <>
       <h1>Scrabboli</h1>
@@ -102,6 +126,7 @@ export default function HomePage() {
         handleClick={handleCellClick}
       />
       <Rack rackTiles={rackTiles} handleClick={handleTileClick} />
+      <GameNavBar onClick={handleRecall} />
     </>
   );
 }
