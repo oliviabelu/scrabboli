@@ -2,7 +2,7 @@ import Brick from "../Brick";
 import { CELLNUMBERS } from "@/constants/gameConstants";
 import { StyledBoard } from "./Board.styled";
 
-export default function Board({ wordSet, handleClick, cells }) {
+export default function Board({ handleClick, cells }) {
   return (
     <StyledBoard>
       {CELLNUMBERS.map((cellRow) =>

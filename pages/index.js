@@ -19,7 +19,8 @@ export default function HomePage() {
   const [chosenTile, setChosenTile] = useState(null);
   const [rackTiles, setRackTiles] = useState([]);
 
-  const { data: gameData, isLoading, error } = useSWR("/api/games");
+  //for later, when data is needed
+  // const { data: gameData, isLoading, error } = useSWR("/api/games");
 
   useEffect(() => {
     async function loadWords() {
@@ -70,7 +71,6 @@ export default function HomePage() {
   }
 
   function handleCellClick(row, column) {
-    console.log("row: ", row, "column: ", column);
     if (chosenTile) {
       setCells({ ...cells, [`${row}-${column}`]: chosenTile });
       setRackTiles(
@@ -82,24 +82,22 @@ export default function HomePage() {
     }
   }
 
-  if (isLoading) return <p>Loading...</p>;
+  //for later
+  // if (isLoading) return <p>Loading...</p>;
 
-  console.log(error);
-  console.log(gameData);
-
-  if (error) {
-    return <h1>Oops… something went wrong.</h1>;
-  }
-  if (!gameData) {
-    return <h1>No games.</h1>;
-  }
+  // if (error) {
+  //   return <h1>Oops… something went wrong.</h1>;
+  // }
+  // if (!gameData) {
+  //   return <h1>No games.</h1>;
+  // }
   return (
     <>
       <h1>Scrabboli</h1>
 
       <Board
-        wordSet={wordSet}
-        gameData={gameData}
+        //wordSet={wordSet}
+        //gameData={gameData}
         cells={cells}
         handleClick={handleCellClick}
       />
