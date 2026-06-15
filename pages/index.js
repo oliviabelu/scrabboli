@@ -84,13 +84,15 @@ export default function HomePage() {
 
   if (isLoading) return <p>Loading...</p>;
 
+  console.log(error);
+  console.log(gameData);
+
   if (error) {
     return <h1>Oops… something went wrong.</h1>;
   }
   if (!gameData) {
     return <h1>No games.</h1>;
   }
-  console.log(rackTiles);
   return (
     <>
       <h1>Scrabboli</h1>
