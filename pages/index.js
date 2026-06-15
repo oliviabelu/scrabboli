@@ -1,11 +1,26 @@
 import useSWR from "swr";
 import { useState, useEffect } from "react";
 import Board from "@/components/Board";
+import { TILES, CATEGORIES } from "@/constants/gameConstants";
+import Rack from "@/components/Rack";
+
+function createTilebag() {
+  return Object.entries(TILES).flatMap(([letter, { count, value }]) =>
+    Array(count).fill({ letter, value })
+  );
+}
+
+const tileNumbers = [1, 2, 3, 4, 5, 6, 7];
 
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
+  const [tilebag, setTilebag] = useState(createTilebag);
+  const [cells, setCells] = useState(CATEGORIES);
+  const [chosenTile, setChosenTile] = useState(null);
+  const [rackTiles, setRackTiles] = useState([]);
 
-  const { data: gameData, isLoading, error } = useSWR("/api/games");
+  //for later, when data is needed
+  // const { data: gameData, isLoading, error } = useSWR("/api/games");
 
   useEffect(() => {
     async function loadWords() {
@@ -27,20 +42,66 @@ export default function HomePage() {
     loadWords();
   }, []);
 
-  if (isLoading) return <p>Loading...</p>;
+  useEffect(() => {
+    const drawnTiles = tileNumbers.map((tileNumber) => {
+      const randomIndex = Math.floor(Math.random() * tilebag.length);
+      return tilebag[randomIndex];
+    });
+    setRackTiles(drawnTiles);
+    updateTilebag(drawnTiles);
+  }, []);
 
-  if (error) {
-    return <h1>Oops… something went wrong.</h1>;
-  }
-  if (!gameData) {
-    return <h1>No games.</h1>;
+  function updateTilebag(drawnTiles) {
+    let updatedTilebag = tilebag;
+
+    drawnTiles.forEach((drawnTile) => {
+      const index = updatedTilebag.findIndex(
+        (tile) => tile.letter === drawnTile.letter
+      );
+      if (index !== -1) {
+        updatedTilebag = updatedTilebag.toSpliced(index, 1);
+      }
+    });
+
+    setTilebag(updatedTilebag);
   }
 
+  function handleTileClick(tile, index) {
+    setChosenTile({ ...tile, index });
+  }
+
+  function handleCellClick(row, column) {
+    if (chosenTile) {
+      setCells({ ...cells, [`${row}-${column}`]: chosenTile });
+      setRackTiles(
+        rackTiles.map((rackTile, index) =>
+          chosenTile.index === index ? { letter: "", value: "" } : rackTile
+        )
+      );
+      setChosenTile(null);
+    }
+  }
+
+  //for later
+  // if (isLoading) return <p>Loading...</p>;
+
+  // if (error) {
+  //   return <h1>Oops… something went wrong.</h1>;
+  // }
+  // if (!gameData) {
+  //   return <h1>No games.</h1>;
+  // }
   return (
     <>
       <h1>Scrabboli</h1>
 
-      <Board wordSet={wordSet} gameData={gameData} />
+      <Board
+        //wordSet={wordSet}
+        //gameData={gameData}
+        cells={cells}
+        handleClick={handleCellClick}
+      />
+      <Rack rackTiles={rackTiles} handleClick={handleTileClick} />
     </>
   );
 }

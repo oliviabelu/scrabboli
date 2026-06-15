@@ -5,14 +5,17 @@ export default createGlobalStyle`
 :root {
 
 //variables
---brick-size: 6vw;
---brick-border-radius: 0.2rem;
+--cell-size: 6vw;
+--tile-size: 10vw;
+--brick-border-radius: 0.5rem;
 
 --cell: #d8d8d8;
+--cell-margin: 0.05rem;;
 
 --tile: #5bb644;
+--tile-margin: 0.2rem;
 
-
+--tile-empty : #ffffff;
 
 --cell-start: #ffe138;
 --cell-start-color: #8b7700;
@@ -29,8 +32,6 @@ export default createGlobalStyle`
 --cell-triple-word: #e8c6fc;
 --cell-triple-word-color: #6600a1;
 
-
---board-gap: 1px;
 }
   *,
   *::before,
@@ -40,6 +41,7 @@ export default createGlobalStyle`
 
   body {
     margin: 0;
+    padding: 0;
     font-family: system-ui;
   }
 `;
