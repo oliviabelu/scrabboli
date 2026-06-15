@@ -114,9 +114,7 @@ export default function HomePage() {
   // if (!gameData) {
   //   return <h1>No games.</h1>;
   // }
-  console.log("rackTiles: ", rackTiles);
-  console.log("currentMove: ", currentMove);
-  console.log("cells: ", cells);
+
   return (
     <>
       <h1>Scrabboli</h1>
