@@ -62,13 +62,11 @@ export default function HomePage() {
   }
 
   function handleCellClick(row, column) {
+    if (!chosenTile) return;
+    if (chosenTile.isPlayed) return;
+    if (typeof cells[`${row}-${column}`] === "object") return;
+
     if (chosenTile) {
-      if (chosenTile.isPlayed) {
-        return;
-      }
-      if (typeof cells[`${row}-${column}`] === "object") {
-        return;
-      }
       setCells({ ...cells, [`${row}-${column}`]: chosenTile });
       setRackTiles(
         rackTiles.map((rackTile, index) =>
