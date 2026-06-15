@@ -22,7 +22,7 @@ export default function HomePage() {
   const [currentMove, setCurrentMove] = useState([]);
 
   //for later, when data is needed
-  // const { data: gameData, isLoading, error } = useSWR("/api/games");
+  const { data: gameData, isLoading, error } = useSWR("/api/games");
 
   useEffect(() => {
     async function loadWords() {
@@ -106,14 +106,14 @@ export default function HomePage() {
   }
 
   //for later
-  // if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <p>Loading...</p>;
 
-  // if (error) {
-  //   return <h1>Oops… something went wrong.</h1>;
-  // }
-  // if (!gameData) {
-  //   return <h1>No games.</h1>;
-  // }
+  if (error) {
+    return <h1>Oops… something went wrong.</h1>;
+  }
+  if (!gameData) {
+    return <h1>No games.</h1>;
+  }
 
   return (
     <>
