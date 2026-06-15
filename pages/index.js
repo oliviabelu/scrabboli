@@ -45,28 +45,17 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    const drawnTiles = tileNumbers.map((tileNumber) => {
-      const randomIndex = Math.floor(Math.random() * tilebag.length);
-      return { ...tilebag[randomIndex], isPlayed: false };
+    let currentTilebag = [...tilebag];
+
+    const drawnTiles = tileNumbers.map(() => {
+      const randomIndex = Math.floor(Math.random() * currentTilebag.length);
+      const drawnTile = currentTilebag[randomIndex];
+      currentTilebag = currentTilebag.toSpliced(randomIndex, 1);
+      return { ...drawnTile, isPlayed: false };
     });
     setRackTiles(drawnTiles);
-    updateTilebag(drawnTiles);
+    setTilebag();
   }, []);
-
-  function updateTilebag(drawnTiles) {
-    let updatedTilebag = tilebag;
-
-    drawnTiles.forEach((drawnTile) => {
-      const index = updatedTilebag.findIndex(
-        (tile) => tile.letter === drawnTile.letter
-      );
-      if (index !== -1) {
-        updatedTilebag = updatedTilebag.toSpliced(index, 1);
-      }
-    });
-
-    setTilebag(updatedTilebag);
-  }
 
   function handleTileClick(tile, index) {
     setChosenTile({ ...tile, index });
