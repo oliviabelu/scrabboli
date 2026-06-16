@@ -1,10 +1,21 @@
 import { StyledBrick, StyledLetter, StyledValue } from "./Brick.styled";
 
-export default function Brick({ category, tileLetter, tileValue, onClick }) {
+export default function Brick({
+  category,
+  tileLetter,
+  tileValue,
+  isChosenTile,
+  onClick,
+}) {
   const isTile = ["tile", "boardTile", "emptyTile"].includes(category);
   const isJoker = tileLetter === "?";
   return (
-    <StyledBrick type="button" onClick={onClick} $category={category}>
+    <StyledBrick
+      type="button"
+      onClick={onClick}
+      $category={category}
+      $isChosenTile={isChosenTile}
+    >
       {!isTile ? (
         category
       ) : isJoker ? (
