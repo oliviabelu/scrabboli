@@ -128,6 +128,7 @@ export default function HomePage() {
     });
     setCells(recallCells);
     setCurrentMove([]);
+    setChosenTile(null);
   }
 
   //for later
