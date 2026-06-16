@@ -58,13 +58,45 @@ export default function HomePage() {
   }, []);
 
   function handleTileClick(tile, index) {
-    setChosenTile({ ...tile, index });
+    index === chosenTile?.index
+      ? setChosenTile(null)
+      : setChosenTile({ ...tile, index });
   }
 
   function handleCellClick(row, column) {
-    if (!chosenTile) return;
+    const cellIndex = `${row}-${column}`;
+    const isTile = cellIndex in cells && typeof cells[cellIndex] === "object";
+
+    if (!chosenTile && !isTile) return;
+
+    if (isTile) {
+      cellIndex === chosenTile
+        ? setChosenTile(null)
+        : setChosenTile(`${row}-${column}`);
+      return;
+    }
+
     if (chosenTile.isPlayed) return;
-    if (typeof cells[`${row}-${column}`] === "object") return;
+
+    const isChosenTileFromBoard = typeof chosenTile === "string";
+
+    if (isChosenTileFromBoard && !isTile) {
+      const currentCells = { ...cells };
+      currentCells[cellIndex] = currentCells[chosenTile];
+      delete currentCells[chosenTile];
+
+      if (chosenTile in CATEGORIES) {
+        currentCells[chosenTile] = CATEGORIES[chosenTile];
+      }
+
+      setCells(currentCells);
+      setCurrentMove(
+        currentMove.map((move) => (move === chosenTile ? cellIndex : move))
+      );
+      setChosenTile(null);
+
+      return;
+    }
 
     if (chosenTile) {
       setCells({ ...cells, [`${row}-${column}`]: chosenTile });
@@ -116,9 +148,14 @@ export default function HomePage() {
         //wordSet={wordSet}
         //gameData={gameData}
         cells={cells}
+        chosenTile={chosenTile}
         handleClick={handleCellClick}
       />
-      <Rack rackTiles={rackTiles} handleClick={handleTileClick} />
+      <Rack
+        rackTiles={rackTiles}
+        chosenTile={chosenTile}
+        handleClick={handleTileClick}
+      />
       <GameNavBar onClick={handleRecall} />
     </>
   );

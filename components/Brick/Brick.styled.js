@@ -55,6 +55,12 @@ export const StyledBrick = styled.button`
     `}
 
   ${(props) =>
+    props.$isChosenTile &&
+    css`
+      border: solid 0.1rem black;
+    `}
+
+  ${(props) =>
     props.$category === "emptyTile" &&
     css`
       background-color: var(--tile-empty);

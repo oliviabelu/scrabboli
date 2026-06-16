@@ -2,7 +2,7 @@ import Brick from "../Brick";
 import { CELLNUMBERS } from "@/constants/gameConstants";
 import { StyledBoard } from "./Board.styled";
 
-export default function Board({ handleClick, cells }) {
+export default function Board({ cells, chosenTile, handleClick }) {
   return (
     <StyledBoard>
       {CELLNUMBERS.map((cellRow) =>
@@ -10,6 +10,7 @@ export default function Board({ handleClick, cells }) {
           const key = `${cellRow}-${cellColumn}`;
           const cellValue = cells[key];
           const isBoardTile = typeof cells[key] === "object";
+          const isChosenTile = key === chosenTile;
 
           const category = isBoardTile ? "boardTile" : (cellValue ?? null);
 
@@ -22,6 +23,7 @@ export default function Board({ handleClick, cells }) {
               category={category}
               tileLetter={letter}
               tileValue={value}
+              isChosenTile={isChosenTile}
               onClick={() => handleClick(cellRow, cellColumn)}
             />
           );
