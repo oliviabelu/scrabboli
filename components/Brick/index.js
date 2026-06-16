@@ -8,6 +8,7 @@ export default function Brick({
   onClick,
 }) {
   const isTile = ["tile", "boardTile", "emptyTile"].includes(category);
+  const isJokerLetter = category === "jokerLetter";
   const isJoker = tileLetter === "?";
   return (
     <StyledBrick
@@ -17,7 +18,11 @@ export default function Brick({
       $isChosenTile={isChosenTile}
     >
       {!isTile ? (
-        category
+        isJokerLetter ? (
+          tileLetter
+        ) : (
+          category
+        )
       ) : isJoker ? (
         ""
       ) : (

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { TILES, CATEGORIES } from "@/constants/gameConstants";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
+import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
 
 function createTilebag() {
@@ -131,6 +132,10 @@ export default function HomePage() {
     setChosenTile(null);
   }
 
+  function handleJokerLetterClick(letter) {
+    console.log(letter);
+  }
+
   //for later
   // if (isLoading) return <p>Loading...</p>;
 
@@ -157,6 +162,7 @@ export default function HomePage() {
         chosenTile={chosenTile}
         handleClick={handleTileClick}
       />
+      <JokerLetter onClick={handleJokerLetterClick} />
       <GameNavBar onClick={handleRecall} />
     </>
   );

@@ -1,0 +1,48 @@
+import { Root, Trigger, Portal, Content } from "@radix-ui/react-popover";
+import { CircleX } from "lucide-react";
+import Brick from "../Brick";
+import {
+  StyledContent,
+  StyledLetterList,
+  StyledClose,
+} from "./JokerLetter.styled";
+import { ALPHABET } from "@/constants/gameConstants";
+import { useState } from "react";
+
+export default function JokerLetter({ onClick }) {
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
+  function handleLetterClick(letter) {
+    setPopoverOpen(false);
+    onClick(letter);
+  }
+  return (
+    <Root open={popoverOpen} onOpenChange={setPopoverOpen}>
+      <Trigger asChild>
+        <button aria-label="Buchstabe wählen">JO</button>
+      </Trigger>
+      <Portal>
+        <Content>
+          <StyledContent>
+            <p>Buchstabe wählen</p>
+            <StyledLetterList>
+              {ALPHABET.map((letter) => (
+                <li key={letter}>
+                  <Brick
+                    category={"jokerLetter"}
+                    tileLetter={letter}
+                    onClick={() => handleLetterClick(letter)}
+                  />
+                </li>
+              ))}
+            </StyledLetterList>
+
+            <StyledClose aria-label="schliessen">
+              <CircleX />
+            </StyledClose>
+          </StyledContent>
+        </Content>
+      </Portal>
+    </Root>
+  );
+}
