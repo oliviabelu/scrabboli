@@ -80,7 +80,7 @@ export default function HomePage() {
 
     const isChosenTileFromBoard = typeof chosenTile === "string";
 
-    if (isChosenTileFromBoard && !isTile) {
+    if (isChosenTileFromBoard) {
       const currentCells = { ...cells };
       currentCells[cellIndex] = currentCells[chosenTile];
       delete currentCells[chosenTile];
