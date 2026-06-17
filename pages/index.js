@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import { useState, useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { TILES, CATEGORIES, TILENUMBERS } from "@/constants/gameConstants";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
@@ -99,7 +100,6 @@ export default function HomePage() {
     }
 
     if (chosenTile) {
-      console.log(chosenTile);
       if (chosenTile.letter === "?") {
         setChosenJokerPosition(cellIndex);
         return;
@@ -151,6 +151,19 @@ export default function HomePage() {
     setChosenJokerPosition(null);
   }
 
+  //function that checks everything before saving move finally on board
+  // and enabeling next move
+  function handlePlay() {
+    console.log(currentMove);
+    //word must have at least 2 letters
+    //(for now currentMove length check, for later words,
+    // currentMove length can be 1, bc word need to "cross" another word on the board)
+    if (currentMove.length < 2) {
+      console.log("zu kurz");
+      toast.error("Wort zu kurz");
+    }
+  }
+
   //for later
   // if (isLoading) return <p>Loading...</p>;
 
@@ -164,6 +177,7 @@ export default function HomePage() {
   return (
     <>
       <h1>Scrabboli</h1>
+      <Toaster />
       {chosenJokerPosition && <JokerLetter onClick={handleJokerLetterClick} />}
       <Board
         //wordSet={wordSet}
@@ -178,7 +192,7 @@ export default function HomePage() {
         handleClick={handleTileClick}
       />
 
-      <GameNavBar onClick={handleRecall} />
+      <GameNavBar onRecall={handleRecall} onPlay={handlePlay} />
     </>
   );
 }
