@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import { useState, useEffect } from "react";
-import { TILES, CATEGORIES } from "@/constants/gameConstants";
+import { TILES, CATEGORIES, TILENUMBERS } from "@/constants/gameConstants";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
@@ -12,8 +12,6 @@ function createTilebag() {
   );
 }
 
-const tileNumbers = [1, 2, 3, 4, 5, 6, 7];
-
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
   const [tilebag, setTilebag] = useState(createTilebag);
@@ -21,7 +19,7 @@ export default function HomePage() {
   const [chosenTile, setChosenTile] = useState(null);
   const [rackTiles, setRackTiles] = useState([]);
   const [currentMove, setCurrentMove] = useState([]);
-  const [chosenJokerPosition, setchosenJokerPosition] = useState(null);
+  const [chosenJokerPosition, setChosenJokerPosition] = useState(null);
 
   //for later, when data is needed
   //const { data: gameData, isLoading, error } = useSWR("/api/games");
@@ -49,14 +47,14 @@ export default function HomePage() {
   useEffect(() => {
     let currentTilebag = [...tilebag];
 
-    const drawnTiles = tileNumbers.map(() => {
+    const drawnTiles = TILENUMBERS.map(() => {
       const randomIndex = Math.floor(Math.random() * currentTilebag.length);
       const drawnTile = currentTilebag[randomIndex];
       currentTilebag = currentTilebag.toSpliced(randomIndex, 1);
       return { ...drawnTile, isPlayed: false };
     });
     setRackTiles(drawnTiles);
-    setTilebag();
+    setTilebag(currentTilebag);
   }, []);
 
   function handleTileClick(tile, index) {
@@ -103,7 +101,7 @@ export default function HomePage() {
     if (chosenTile) {
       console.log(chosenTile);
       if (chosenTile.letter === "?") {
-        setchosenJokerPosition(cellIndex);
+        setChosenJokerPosition(cellIndex);
         return;
       }
       setCells({ ...cells, [`${row}-${column}`]: chosenTile });
@@ -150,7 +148,7 @@ export default function HomePage() {
     );
     setChosenTile(null);
     setCurrentMove([...currentMove, chosenJokerPosition]);
-    setchosenJokerPosition(null);
+    setChosenJokerPosition(null);
   }
 
   //for later

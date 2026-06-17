@@ -93,6 +93,8 @@ export const TILES = {
   "?": { count: 2, value: 0 },
 };
 
+export const TILENUMBERS = [1, 2, 3, 4, 5, 6, 7];
+
 export const ALPHABET = [
   "A",
   "B",

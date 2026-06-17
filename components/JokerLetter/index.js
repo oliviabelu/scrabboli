@@ -1,10 +1,4 @@
-import {
-  Root,
-  Trigger,
-  Portal,
-  Content,
-  Anchor,
-} from "@radix-ui/react-popover";
+import { Root, Portal, Content, Anchor } from "@radix-ui/react-popover";
 import { CircleX } from "lucide-react";
 import Brick from "../Brick";
 import {
