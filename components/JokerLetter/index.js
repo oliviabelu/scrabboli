@@ -25,9 +25,6 @@ export default function JokerLetter({ onClick }) {
   }
   return (
     <Root open={popoverOpen} onOpenChange={setPopoverOpen}>
-      {/* <Trigger asChild>
-        <button aria-label="Buchstabe wählen">JO</button>
-      </Trigger> */}
       <Anchor>
         <StyledAnchor />
       </Anchor>
