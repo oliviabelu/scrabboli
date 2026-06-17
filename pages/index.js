@@ -21,6 +21,8 @@ export default function HomePage() {
   const [chosenTile, setChosenTile] = useState(null);
   const [rackTiles, setRackTiles] = useState([]);
   const [currentMove, setCurrentMove] = useState([]);
+  //const [isJokerLetter, setIsJokerLetter] = useState(false);
+  const [chosenJokerPosition, setchosenJokerPosition] = useState(null);
 
   //for later, when data is needed
   //const { data: gameData, isLoading, error } = useSWR("/api/games");
@@ -100,6 +102,11 @@ export default function HomePage() {
     }
 
     if (chosenTile) {
+      console.log(chosenTile);
+      if (chosenTile.letter === "?") {
+        setchosenJokerPosition(cellIndex);
+        return;
+      }
       setCells({ ...cells, [`${row}-${column}`]: chosenTile });
       setRackTiles(
         rackTiles.map((rackTile, index) =>
@@ -133,7 +140,18 @@ export default function HomePage() {
   }
 
   function handleJokerLetterClick(letter) {
-    console.log(letter);
+    setCells({
+      ...cells,
+      [chosenJokerPosition]: { ...chosenTile, letter: letter },
+    });
+    setRackTiles(
+      rackTiles.map((rackTile, index) =>
+        chosenTile.index === index ? { ...rackTile, isPlayed: true } : rackTile
+      )
+    );
+    setChosenTile(null);
+    setCurrentMove([...currentMove, chosenJokerPosition]);
+    setchosenJokerPosition(null);
   }
 
   //for later
@@ -149,7 +167,7 @@ export default function HomePage() {
   return (
     <>
       <h1>Scrabboli</h1>
-
+      {chosenJokerPosition && <JokerLetter onClick={handleJokerLetterClick} />}
       <Board
         //wordSet={wordSet}
         //gameData={gameData}
@@ -162,7 +180,7 @@ export default function HomePage() {
         chosenTile={chosenTile}
         handleClick={handleTileClick}
       />
-      <JokerLetter onClick={handleJokerLetterClick} />
+
       <GameNavBar onClick={handleRecall} />
     </>
   );

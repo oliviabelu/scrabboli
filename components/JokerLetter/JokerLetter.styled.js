@@ -27,3 +27,9 @@ export const StyledClose = styled(Close)`
   align-items: center;
   justify-content: center;
 `;
+
+export const StyledAnchor = styled.div`
+  //position: absolute;
+  /* top: 200;
+  left: 100; */
+`;
