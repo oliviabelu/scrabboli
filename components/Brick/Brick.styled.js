@@ -110,10 +110,18 @@ export const StyledBrick = styled.button`
       background-color: var(--cell-double-word);
       color: var(--cell-double-word-color);
     `}
+
     ${(props) =>
     props.$category === "3W" &&
     css`
       background-color: var(--cell-triple-word);
       color: var(--cell-triple-word-color);
+    `}
+
+    ${(props) =>
+    props.$category === "jokerLetter" &&
+    css`
+      background-color: var(--tile);
+      color: white;
     `}
 `;

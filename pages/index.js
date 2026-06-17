@@ -1,8 +1,9 @@
 import useSWR from "swr";
 import { useState, useEffect } from "react";
-import { TILES, CATEGORIES } from "@/constants/gameConstants";
+import { TILES, CATEGORIES, TILENUMBERS } from "@/constants/gameConstants";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
+import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
 
 function createTilebag() {
@@ -11,8 +12,6 @@ function createTilebag() {
   );
 }
 
-const tileNumbers = [1, 2, 3, 4, 5, 6, 7];
-
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
   const [tilebag, setTilebag] = useState(createTilebag);
@@ -20,6 +19,7 @@ export default function HomePage() {
   const [chosenTile, setChosenTile] = useState(null);
   const [rackTiles, setRackTiles] = useState([]);
   const [currentMove, setCurrentMove] = useState([]);
+  const [chosenJokerPosition, setChosenJokerPosition] = useState(null);
 
   //for later, when data is needed
   //const { data: gameData, isLoading, error } = useSWR("/api/games");
@@ -47,14 +47,14 @@ export default function HomePage() {
   useEffect(() => {
     let currentTilebag = [...tilebag];
 
-    const drawnTiles = tileNumbers.map(() => {
+    const drawnTiles = TILENUMBERS.map(() => {
       const randomIndex = Math.floor(Math.random() * currentTilebag.length);
       const drawnTile = currentTilebag[randomIndex];
       currentTilebag = currentTilebag.toSpliced(randomIndex, 1);
       return { ...drawnTile, isPlayed: false };
     });
     setRackTiles(drawnTiles);
-    setTilebag();
+    setTilebag(currentTilebag);
   }, []);
 
   function handleTileClick(tile, index) {
@@ -99,6 +99,11 @@ export default function HomePage() {
     }
 
     if (chosenTile) {
+      console.log(chosenTile);
+      if (chosenTile.letter === "?") {
+        setChosenJokerPosition(cellIndex);
+        return;
+      }
       setCells({ ...cells, [`${row}-${column}`]: chosenTile });
       setRackTiles(
         rackTiles.map((rackTile, index) =>
@@ -128,6 +133,22 @@ export default function HomePage() {
     });
     setCells(recallCells);
     setCurrentMove([]);
+    setChosenTile(null);
+  }
+
+  function handleJokerLetterClick(letter) {
+    setCells({
+      ...cells,
+      [chosenJokerPosition]: { ...chosenTile, letter: letter },
+    });
+    setRackTiles(
+      rackTiles.map((rackTile, index) =>
+        chosenTile.index === index ? { ...rackTile, isPlayed: true } : rackTile
+      )
+    );
+    setChosenTile(null);
+    setCurrentMove([...currentMove, chosenJokerPosition]);
+    setChosenJokerPosition(null);
   }
 
   //for later
@@ -143,7 +164,7 @@ export default function HomePage() {
   return (
     <>
       <h1>Scrabboli</h1>
-
+      {chosenJokerPosition && <JokerLetter onClick={handleJokerLetterClick} />}
       <Board
         //wordSet={wordSet}
         //gameData={gameData}
@@ -156,6 +177,7 @@ export default function HomePage() {
         chosenTile={chosenTile}
         handleClick={handleTileClick}
       />
+
       <GameNavBar onClick={handleRecall} />
     </>
   );

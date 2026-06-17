@@ -92,3 +92,37 @@ export const TILES = {
   Ü: { count: 1, value: 6 },
   "?": { count: 2, value: 0 },
 };
+
+export const TILENUMBERS = [1, 2, 3, 4, 5, 6, 7];
+
+export const ALPHABET = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "S",
+  "T",
+  "U",
+  "V",
+  "W",
+  "X",
+  "Y",
+  "Z",
+  "Ä",
+  "Ö",
+  "Ü",
+];
