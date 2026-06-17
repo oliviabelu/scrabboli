@@ -21,7 +21,6 @@ export default function HomePage() {
   const [chosenTile, setChosenTile] = useState(null);
   const [rackTiles, setRackTiles] = useState([]);
   const [currentMove, setCurrentMove] = useState([]);
-  //const [isJokerLetter, setIsJokerLetter] = useState(false);
   const [chosenJokerPosition, setchosenJokerPosition] = useState(null);
 
   //for later, when data is needed
