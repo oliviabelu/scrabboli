@@ -1,12 +1,11 @@
 import useSWR from "swr";
 import { useState, useEffect } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { TILES, CATEGORIES, TILENUMBERS } from "@/constants/gameConstants";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
-import { ColumnsIcon } from "lucide-react";
 
 function createTilebag() {
   return Object.entries(TILES).flatMap(([letter, { count, value }]) =>
@@ -224,7 +223,7 @@ export default function HomePage() {
   return (
     <>
       <h1>Scrabboli</h1>
-      <Toaster />
+
       {chosenJokerPosition && <JokerLetter onClick={handleJokerLetterClick} />}
       <Board
         //wordSet={wordSet}
