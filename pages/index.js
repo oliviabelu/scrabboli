@@ -1,23 +1,16 @@
 import useSWR from "swr";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import { CATEGORIES, SPECIAL_CELL_TYPES } from "@/constants/gameConstants";
 import {
-  TILES,
-  CATEGORIES,
-  TILENUMBERS,
-  SPECIAL_CELL_TYPES,
-} from "@/constants/gameConstants";
-import { checkConsecutiveNumbers } from "@/utils/gameLogic";
+  checkConsecutiveNumbers,
+  createTilebag,
+  drawTilesFromTilebag,
+} from "@/utils/gameLogic";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
-
-function createTilebag() {
-  return Object.entries(TILES).flatMap(([letter, { count, value }]) =>
-    Array(count).fill({ letter, value })
-  );
-}
 
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
@@ -53,14 +46,10 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    let currentTilebag = [...tilebag];
-
-    const drawnTiles = TILENUMBERS.map(() => {
-      const randomIndex = Math.floor(Math.random() * currentTilebag.length);
-      const drawnTile = currentTilebag[randomIndex];
-      currentTilebag = currentTilebag.toSpliced(randomIndex, 1);
-      return { ...drawnTile, isPlayed: false };
-    });
+    const { drawnTiles, currentTilebag } = drawTilesFromTilebag(
+      undefined,
+      tilebag
+    );
     setRackTiles(drawnTiles);
     setTilebag(currentTilebag);
   }, []);
@@ -211,10 +200,12 @@ export default function HomePage() {
     }
 
     toast.success("Wort gespielt.");
+    //update everything for next round
     setIsFirstWord(false);
 
     console.log(cells);
     console.log(currentMove);
+
     const newCells = { ...cells };
     currentMove.forEach((move) => {
       const cellValue = `${newCells[move].letter}-${newCells[move].value}`;
@@ -222,9 +213,21 @@ export default function HomePage() {
       newCells[move] = cellValue;
     });
     console.log(newCells);
+
     setCurrentMove([]);
     setCells(newCells);
     setChosenTile(null);
+
+    //update tilebag and rack
+    console.log("rack: ", rackTiles, "tilebag: ", tilebag);
+    const { drawnTiles, currentTilebag } = drawTilesFromTilebag(
+      rackTiles,
+      tilebag
+    );
+    console.log(drawnTiles, currentTilebag);
+
+    setRackTiles(drawnTiles);
+    setTilebag(currentTilebag);
   }
 
   //for later
