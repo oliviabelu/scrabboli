@@ -1,5 +1,7 @@
 export const CELLNUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
+export const SPECIAL_CELL_TYPES = ["2B", "3B", "2W", "3W", "start"];
+
 export const CATEGORIES = {
   "1-8": "2B",
   "3-5": "2B",

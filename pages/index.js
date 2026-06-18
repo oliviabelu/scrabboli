@@ -1,7 +1,12 @@
 import useSWR from "swr";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { TILES, CATEGORIES, TILENUMBERS } from "@/constants/gameConstants";
+import {
+  TILES,
+  CATEGORIES,
+  TILENUMBERS,
+  SPECIAL_CELL_TYPES,
+} from "@/constants/gameConstants";
 import { checkConsecutiveNumbers } from "@/utils/gameLogic";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
@@ -69,6 +74,12 @@ export default function HomePage() {
   function handleCellClick(row, column) {
     const cellIndex = `${row}-${column}`;
     const isTile = cellIndex in cells && typeof cells[cellIndex] === "object";
+    const isPlayedTile =
+      cellIndex in cells &&
+      typeof cells[cellIndex] === "string" &&
+      !SPECIAL_CELL_TYPES.includes(cells[cellIndex]);
+
+    if (isPlayedTile) return;
 
     if (!chosenTile && !isTile) return;
 

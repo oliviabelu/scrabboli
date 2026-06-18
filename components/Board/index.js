@@ -1,23 +1,21 @@
 import Brick from "../Brick";
-import { CELLNUMBERS } from "@/constants/gameConstants";
+import { CELLNUMBERS, SPECIAL_CELL_TYPES } from "@/constants/gameConstants";
 import { StyledBoard } from "./Board.styled";
 
 export default function Board({ cells, chosenTile, handleClick }) {
-  const validations = ["2B", "3B", "2W", "3W", "start"];
   return (
     <StyledBoard>
       {CELLNUMBERS.map((cellRow) =>
         CELLNUMBERS.map((cellColumn) => {
           const key = `${cellRow}-${cellColumn}`;
           const cellValue = cells[key];
-          console.log(cellValue);
           const isBoardTile = typeof cells[key] === "object";
 
           const isSpecialCell = key in cells;
           const isPlayedBoardTile =
             isSpecialCell &&
             typeof cells[key] === "string" &&
-            (!validations.includes(cellValue) ?? false);
+            (!SPECIAL_CELL_TYPES.includes(cellValue) ?? false);
 
           const isChosenTile = key === chosenTile;
 
