@@ -171,11 +171,28 @@ export default function HomePage() {
 
     const rows = [];
     const columns = [];
+    const neighbors = new Set();
 
     currentMove.forEach((move) => {
-      const [row, column] = move.split("-");
+      const [row, column] = move.split("-").map(Number);
       rows.push(row);
       columns.push(column);
+
+      if (!isFirstWord) {
+        const left = `${row - 1}-${column}`;
+        const right = `${row + 1}-${column}`;
+        const up = `${row}-${column - 1}`;
+        const down = `${row}-${column + 1}`;
+        console.log(left, right, up, down);
+        neighbors.add(left);
+        neighbors.add(right);
+        neighbors.add(up);
+        neighbors.add(down);
+        console.log("neighbors: ", neighbors);
+        neighbors.has(move) && neighbors.delete(move);
+        console.log(neighbors);
+        //continue here
+      }
     });
 
     const rowSet = new Set(rows);
@@ -186,18 +203,28 @@ export default function HomePage() {
       return;
     }
 
-    if (rowSet.size === 1) {
-      if (!checkConsecutiveNumbers(columns)) {
-        toast.error("Das Wort muss zusammenhängend sein.");
-        return;
+    if (isFirstWord) {
+      if (rowSet.size === 1) {
+        if (!checkConsecutiveNumbers(columns)) {
+          toast.error("Das Wort muss zusammenhängend sein.");
+          return;
+        }
+      }
+      if (columnSet.size === 1) {
+        if (!checkConsecutiveNumbers(rows)) {
+          toast.error("Das Wort muss zusammenhängend sein.");
+          return;
+        }
       }
     }
-    if (columnSet.size === 1) {
-      if (!checkConsecutiveNumbers(rows)) {
-        toast.error("Das Wort muss zusammenhängend sein.");
-        return;
-      }
-    }
+
+    //for all next words: new word (or letter) need to
+    // be pre- or appendet to a played word
+    // -->
+    console.log(currentMove);
+    currentMove.forEach((move) => {
+      //check if any cell around is a played tile
+    });
 
     toast.success("Wort gespielt.");
     //update everything for next round
