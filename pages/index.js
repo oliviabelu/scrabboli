@@ -222,10 +222,12 @@ export default function HomePage() {
           toast.error("Das Wort muss zusammenhängend sein.");
           return;
         }
+        const theOnlyRow = [...rowSet][0];
         dockingTiles.forEach((tile) => {
-          const [, column] = splitBrickName(tile);
-
-          columns.push(column);
+          const [row, column] = splitBrickName(tile);
+          if (row === theOnlyRow) {
+            columns.push(column);
+          }
         });
         if (!checkConsecutiveNumbers(columns)) {
           toast.error("Das Wort muss zusammenhängend sein.");
@@ -239,9 +241,13 @@ export default function HomePage() {
           toast.error("Das Wort muss zusammenhängend sein.");
           return;
         }
+        const theOnlyColumn = [...columnSet][0];
         dockingTiles.forEach((tile) => {
-          const [row] = splitBrickName(tile);
-          rows.push(row);
+          const [row, column] = splitBrickName(tile);
+          console.log(row, column, [...columnSet][0]);
+          if (column === theOnlyColumn) {
+            rows.push(row);
+          }
         });
         if (!checkConsecutiveNumbers(rows)) {
           toast.error("Das Wort muss zusammenhängend sein.");
