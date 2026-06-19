@@ -15,7 +15,7 @@ export default function Board({ cells, chosenTile, handleClick }) {
           const isPlayedBoardTile =
             isSpecialCell &&
             typeof cells[key] === "string" &&
-            (!SPECIAL_CELL_TYPES.includes(cellValue) ?? false);
+            !SPECIAL_CELL_TYPES.includes(cellValue);
 
           const isChosenTile = key === chosenTile;
 

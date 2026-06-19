@@ -1,4 +1,4 @@
-import useSWR from "swr";
+//import useSWR from "swr";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { CATEGORIES, SPECIAL_CELL_TYPES } from "@/constants/gameConstants";
