@@ -12,26 +12,27 @@ export default createGlobalStyle`
 --cell: #d8d8d8;
 --cell-margin: 0.05rem;;
 
---tile: #5bb644;
+--tile: #528645;
 --tile-margin: 0.2rem;
 
 --tile-empty : #ffffff;
 
---cell-start: #ffe138;
---cell-start-color: #8b7700;
+--cell-start: #fff4b3;
+--cell-start-color: #3b3200;
 
---cell-double-letter: #fffacb;
---cell-double-letter-color: #c9b500;
+--cell-double-letter: #faf4c1;
+--cell-double-letter-color: #ccae03;
 
---cell-triple-letter: #cfffdd;
---cell-triple-letter-color: #009e2f;
+--cell-triple-letter: #ddfff8;
+--cell-triple-letter-color: #009e69;
 
---cell-double-word: #bee4fa;
+--cell-double-word: #bfdcec;
 --cell-double-word-color: #0065a0;
 
---cell-triple-word: #e8c6fc;
---cell-triple-word-color: #6600a1;
+--cell-triple-word: #fcd3dd;
+--cell-triple-word-color: #b1445f;
 
+--off-white: #fdf9f5;
 }
   *,
   *::before,
@@ -43,5 +44,6 @@ export default createGlobalStyle`
     margin: 0;
     padding: 0;
     font-family: system-ui;
+    background-color: var(--off-white);
   }
 `;
