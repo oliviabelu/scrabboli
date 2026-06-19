@@ -6,6 +6,7 @@ import {
   checkConsecutiveNumbers,
   createTilebag,
   drawTilesFromTilebag,
+  splitBrickName,
 } from "@/utils/gameLogic";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
@@ -153,7 +154,7 @@ export default function HomePage() {
     setChosenJokerPosition(null);
   }
 
-  function handlePlay() {
+  function handlePlayClick() {
     if (currentMove.length === 0) {
       toast.error("Lege zuerst Steine.");
       return;
@@ -174,7 +175,7 @@ export default function HomePage() {
     const neighbors = new Set();
 
     currentMove.forEach((move) => {
-      const [row, column] = move.split("-").map(Number);
+      const [row, column] = splitBrickName(move);
       rows.push(row);
       columns.push(column);
 
@@ -183,17 +184,29 @@ export default function HomePage() {
         const right = `${row + 1}-${column}`;
         const up = `${row}-${column - 1}`;
         const down = `${row}-${column + 1}`;
-        console.log(left, right, up, down);
+
         neighbors.add(left);
         neighbors.add(right);
         neighbors.add(up);
         neighbors.add(down);
-        console.log("neighbors: ", neighbors);
-        neighbors.has(move) && neighbors.delete(move);
-        console.log(neighbors);
-        //continue here
       }
     });
+
+    currentMove.forEach((move) => {
+      neighbors.delete(move);
+    });
+
+    const dockingTiles = Array.from(neighbors).filter(
+      (neighbor) =>
+        neighbor in cells &&
+        typeof cells[neighbor] === "string" &&
+        !SPECIAL_CELL_TYPES.includes(cells[neighbor])
+    );
+
+    if (dockingTiles.length === 0 && !isFirstWord) {
+      toast.error("Das neue Wort muss an ein bestehendes angelegt werden.");
+      return;
+    }
 
     const rowSet = new Set(rows);
     const columnSet = new Set(columns);
@@ -203,14 +216,33 @@ export default function HomePage() {
       return;
     }
 
-    if (isFirstWord) {
-      if (rowSet.size === 1) {
+    if (rowSet.size === 1) {
+      if (!checkConsecutiveNumbers(columns)) {
+        if (isFirstWord) {
+          toast.error("Das Wort muss zusammenhängend sein.");
+          return;
+        }
+        dockingTiles.forEach((tile) => {
+          const [, column] = splitBrickName(tile);
+
+          columns.push(column);
+        });
         if (!checkConsecutiveNumbers(columns)) {
           toast.error("Das Wort muss zusammenhängend sein.");
           return;
         }
       }
-      if (columnSet.size === 1) {
+    }
+    if (columnSet.size === 1) {
+      if (!checkConsecutiveNumbers(rows)) {
+        if (isFirstWord) {
+          toast.error("Das Wort muss zusammenhängend sein.");
+          return;
+        }
+        dockingTiles.forEach((tile) => {
+          const [row] = splitBrickName(tile);
+          rows.push(row);
+        });
         if (!checkConsecutiveNumbers(rows)) {
           toast.error("Das Wort muss zusammenhängend sein.");
           return;
@@ -218,40 +250,28 @@ export default function HomePage() {
       }
     }
 
-    //for all next words: new word (or letter) need to
-    // be pre- or appendet to a played word
-    // -->
-    console.log(currentMove);
-    currentMove.forEach((move) => {
-      //check if any cell around is a played tile
-    });
-
     toast.success("Wort gespielt.");
-    //update everything for next round
+
+    finalizeMove();
+  }
+
+  function finalizeMove() {
     setIsFirstWord(false);
-
-    console.log(cells);
-    console.log(currentMove);
-
     const newCells = { ...cells };
     currentMove.forEach((move) => {
       const cellValue = `${newCells[move].letter}-${newCells[move].value}`;
 
       newCells[move] = cellValue;
     });
-    console.log(newCells);
 
     setCurrentMove([]);
     setCells(newCells);
     setChosenTile(null);
 
-    //update tilebag and rack
-    console.log("rack: ", rackTiles, "tilebag: ", tilebag);
     const { drawnTiles, currentTilebag } = drawTilesFromTilebag(
       rackTiles,
       tilebag
     );
-    console.log(drawnTiles, currentTilebag);
 
     setRackTiles(drawnTiles);
     setTilebag(currentTilebag);
@@ -285,7 +305,7 @@ export default function HomePage() {
         handleClick={handleTileClick}
       />
 
-      <GameNavBar onRecall={handleRecall} onPlay={handlePlay} />
+      <GameNavBar onRecall={handleRecall} onPlayClick={handlePlayClick} />
     </>
   );
 }

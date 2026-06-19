@@ -33,3 +33,7 @@ export function createTilebag() {
     Array(count).fill({ letter, value })
   );
 }
+
+export function splitBrickName(name) {
+  return name.split("-").map(Number);
+}

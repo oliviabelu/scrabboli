@@ -1,10 +1,10 @@
-export default function GameNavBar({ onRecall, onPlay }) {
+export default function GameNavBar({ onRecall, onPlayClick }) {
   return (
     <>
       <button type="button" onClick={onRecall}>
         zurückziehen
       </button>
-      <button type="button" onClick={onPlay}>
+      <button type="button" onClick={onPlayClick}>
         Spielen
       </button>
     </>
