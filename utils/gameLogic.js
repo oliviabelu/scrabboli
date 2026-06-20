@@ -1,4 +1,8 @@
-import { TILES, TILENUMBERS } from "@/constants/gameConstants";
+import {
+  TILES,
+  TILENUMBERS,
+  SPECIAL_CELL_TYPES,
+} from "@/constants/gameConstants";
 
 export function drawTilesFromTilebag(tiles, tilebag) {
   const rack = !tiles ? TILENUMBERS : tiles;
@@ -36,4 +40,12 @@ export function createTilebag() {
 
 export function splitBrickName(name) {
   return name.split("-").map(Number);
+}
+
+export function isPlayedTile(key, cells) {
+  return (
+    key in cells &&
+    typeof cells[key] === "string" &&
+    !SPECIAL_CELL_TYPES.includes(cells[key])
+  );
 }

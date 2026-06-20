@@ -7,12 +7,13 @@ import {
   createTilebag,
   drawTilesFromTilebag,
   splitBrickName,
+  isPlayedTile,
 } from "@/utils/gameLogic";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
-import { env } from "@/next.config";
+import next from "next";
 
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
@@ -65,12 +66,8 @@ export default function HomePage() {
   function handleCellClick(row, column) {
     const cellIndex = `${row}-${column}`;
     const isTile = cellIndex in cells && typeof cells[cellIndex] === "object";
-    const isPlayedTile =
-      cellIndex in cells &&
-      typeof cells[cellIndex] === "string" &&
-      !SPECIAL_CELL_TYPES.includes(cells[cellIndex]);
 
-    if (isPlayedTile) return;
+    if (isPlayedTile(cellIndex, cells)) return;
 
     if (!chosenTile && !isTile) return;
 
@@ -192,18 +189,15 @@ export default function HomePage() {
         neighbors.add(down);
       }
     });
-
+    console.log("neighbors: ", neighbors);
     currentMove.forEach((move) => {
       neighbors.delete(move);
     });
-
-    const dockingTiles = Array.from(neighbors).filter(
-      (neighbor) =>
-        neighbor in cells &&
-        typeof cells[neighbor] === "string" &&
-        !SPECIAL_CELL_TYPES.includes(cells[neighbor])
+    console.log(neighbors);
+    const dockingTiles = Array.from(neighbors).filter((neighbor) =>
+      isPlayedTile(neighbor, cells)
     );
-
+    console.log("dockingTiles: ", dockingTiles);
     if (dockingTiles.length === 0 && !isFirstWord) {
       toast.error("Das neue Wort muss an ein bestehendes angelegt werden.");
       return;
@@ -217,7 +211,10 @@ export default function HomePage() {
       return;
     }
 
+    let alignment;
+
     if (rowSet.size === 1) {
+      alignment = "row";
       if (!checkConsecutiveNumbers(columns)) {
         if (isFirstWord) {
           toast.error("Das Wort muss zusammenhängend sein.");
@@ -248,11 +245,7 @@ export default function HomePage() {
           }
 
           missingNumbers.forEach((entry) => {
-            if (
-              entry in cells &&
-              typeof cells[entry] === "string" &&
-              !SPECIAL_CELL_TYPES.includes(cells[entry])
-            ) {
+            if (isPlayedTile(entry, cells)) {
               const [, column] = splitBrickName(entry);
               if (!columns.includes(column)) {
                 columns.push(column);
@@ -267,7 +260,9 @@ export default function HomePage() {
         }
       }
     }
+
     if (columnSet.size === 1) {
+      alignment = "column";
       if (!checkConsecutiveNumbers(rows)) {
         if (isFirstWord) {
           toast.error("Das Wort muss zusammenhängend sein.");
@@ -297,11 +292,7 @@ export default function HomePage() {
           }
 
           missingNumbers.forEach((entry) => {
-            if (
-              entry in cells &&
-              typeof cells[entry] === "string" &&
-              !SPECIAL_CELL_TYPES.includes(cells[entry])
-            ) {
+            if (isPlayedTile(entry, cells)) {
               const [row] = splitBrickName(entry);
               if (!rows.includes(row)) {
                 rows.push(row);
@@ -316,10 +307,162 @@ export default function HomePage() {
         }
       }
     }
-
+    console.log("currentMove: ", currentMove);
+    console.log("rows: ", rows);
+    console.log("columns: ", columns);
+    console.log(cells);
+    const words = buildWords(rows, columns, dockingTiles, alignment);
+    words.map((word) => {
+      if (!checkWordExists(word)) {
+        toast.error(`${word} existiert nicht.`);
+        return;
+      }
+    });
     toast.success("Wort gespielt.");
 
     finalizeMove();
+  }
+
+  function buildWords(rows, columns, dockingTiles, alignment) {
+    let letters = [];
+    const lettersArray = [];
+    console.log(alignment);
+
+    //---ROW---
+    if (alignment === "row") {
+      const row = [...rows][0];
+
+      columns.sort((a, b) => a - b);
+
+      let nextTile = `${row}-${columns[0] - 1}`;
+      while (isPlayedTile(nextTile, cells)) {
+        const [, newColumn] = splitBrickName(nextTile);
+        columns.unshift(newColumn);
+        nextTile = `${row}-${columns[0] - 1}`;
+      }
+
+      nextTile = `${row}-${columns[columns.length - 1] + 1}`;
+      while (isPlayedTile(nextTile, cells)) {
+        const [, newColumn] = splitBrickName(nextTile);
+        columns.push(newColumn);
+        nextTile = `${row}-${columns[columns.length - 1] + 1}`;
+      }
+
+      console.log("columns: ", columns);
+      letters = columns.map((column) => {
+        const key = `${row}-${column}`;
+
+        const tile = cells[key];
+
+        return typeof tile === "string" ? tile.slice(0, 1) : tile.letter;
+      });
+
+      lettersArray.push(letters);
+    }
+
+    //---COLUMN---
+    if (alignment === "column") {
+      const column = [...columns][0];
+
+      rows.sort((a, b) => a - b);
+      //check up
+      let nextTile = `${rows[0] - 1}-${column}`;
+      while (isPlayedTile(nextTile, cells)) {
+        const [newRow] = splitBrickName(nextTile);
+        rows.unshift(newRow);
+        nextTile = `${rows[0] - 1}-${column}`;
+      }
+      //check down
+      nextTile = `${rows[rows.length - 1] + 1}-${column}`;
+      while (isPlayedTile(nextTile, cells)) {
+        const [newRow] = splitBrickName(nextTile);
+        rows.push(newRow);
+        nextTile = `${rows[rows.length - 1] + 1}-${column}`;
+      }
+
+      letters = rows.map((row) => {
+        const key = `${row}-${column}`;
+
+        const tile = cells[key];
+
+        return typeof tile === "string" ? tile.slice(0, 1) : tile.letter;
+      });
+
+      lettersArray.push(letters);
+      letters = [];
+      // --check dockingTiles for docking letters that are not in the column
+
+      const lastDockings = dockingTiles.filter(
+        (tile) => splitBrickName(tile)[1] !== column
+      );
+      console.log("lastDockings: ", lastDockings);
+
+      const newColumns = [];
+      let row = 0;
+
+      lastDockings.forEach((tile, index) => {
+        const [tileRow, tileColumn] = splitBrickName(tile);
+        if (tileRow !== row) {
+          if (index !== 0) {
+            letters = newColumns.map((column) => {
+              const key = `${row}-${column}`;
+
+              const tile = cells[key];
+
+              return typeof tile === "string" ? tile.slice(0, 1) : tile.letter;
+            });
+
+            lettersArray.push(letters);
+          }
+          newColumns.length = 0;
+          newColumns.push(column);
+          row = tileRow;
+        }
+
+        nextTile = tile;
+        if (tileColumn < column) {
+          while (isPlayedTile(nextTile, cells)) {
+            const [, newColumn] = splitBrickName(nextTile);
+
+            newColumns.unshift(newColumn);
+            nextTile = `${row}-${newColumns[0] - 1}`;
+          }
+        }
+
+        if (tileColumn > column) {
+          while (isPlayedTile(nextTile, cells)) {
+            const [, newColumn] = splitBrickName(nextTile);
+            console.log("nreColumn: ", newColumn);
+            newColumns.push(newColumn);
+            nextTile = `${row}-${newColumns[newColumns.length - 1] + 1}`;
+          }
+        }
+
+        if (index === lastDockings.length - 1) {
+          letters = newColumns.map((column) => {
+            const key = `${row}-${column}`;
+
+            const tile = cells[key];
+
+            return typeof tile === "string" ? tile.slice(0, 1) : tile.letter;
+          });
+
+          lettersArray.push(letters);
+        }
+      });
+    }
+
+    console.log("lettersArray: ", lettersArray);
+
+    const words = lettersArray.map((letters) => letters.join(""));
+
+    console.log(words);
+
+    return words;
+  }
+
+  function checkWordExists(word) {
+    return wordSet.has(word);
   }
 
   function finalizeMove() {
@@ -353,7 +496,7 @@ export default function HomePage() {
   // if (!gameData) {
   //   return <h1>No games.</h1>;
   // }
-
+  //console.log(wordSet);
   return (
     <>
       <h1>Scrabboli</h1>
