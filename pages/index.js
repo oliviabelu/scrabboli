@@ -12,6 +12,7 @@ import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
+import { env } from "@/next.config";
 
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
@@ -223,15 +224,46 @@ export default function HomePage() {
           return;
         }
         const theOnlyRow = [...rowSet][0];
+
         dockingTiles.forEach((tile) => {
           const [row, column] = splitBrickName(tile);
           if (row === theOnlyRow) {
             columns.push(column);
           }
         });
+
         if (!checkConsecutiveNumbers(columns)) {
-          toast.error("Das Wort muss zusammenhängend sein.");
-          return;
+          const framingNumbers = dockingTiles
+            .filter((tile) => splitBrickName(tile)[0] === theOnlyRow)
+            .map((tile) => splitBrickName(tile)[1]);
+
+          framingNumbers.sort((a, b) => a - b);
+          let betweenNumber = framingNumbers[0] + 1;
+
+          const missingNumbers = [];
+
+          while (betweenNumber < framingNumbers[framingNumbers.length - 1]) {
+            missingNumbers.push(`${theOnlyRow}-${betweenNumber}`);
+            betweenNumber++;
+          }
+
+          missingNumbers.forEach((entry) => {
+            if (
+              entry in cells &&
+              typeof cells[entry] === "string" &&
+              !SPECIAL_CELL_TYPES.includes(cells[entry])
+            ) {
+              const [, column] = splitBrickName(entry);
+              if (!columns.includes(column)) {
+                columns.push(column);
+              }
+            }
+          });
+
+          if (!checkConsecutiveNumbers(columns)) {
+            toast.error("Das Wort muss zusammenhängend sein.");
+            return;
+          }
         }
       }
     }
@@ -242,16 +274,45 @@ export default function HomePage() {
           return;
         }
         const theOnlyColumn = [...columnSet][0];
+
         dockingTiles.forEach((tile) => {
           const [row, column] = splitBrickName(tile);
-          console.log(row, column, [...columnSet][0]);
           if (column === theOnlyColumn) {
             rows.push(row);
           }
         });
         if (!checkConsecutiveNumbers(rows)) {
-          toast.error("Das Wort muss zusammenhängend sein.");
-          return;
+          const framingNumbers = dockingTiles
+            .filter((tile) => splitBrickName(tile)[1] === theOnlyColumn)
+            .map((tile) => splitBrickName(tile)[0]);
+
+          framingNumbers.sort((a, b) => a - b);
+          let betweenNumber = framingNumbers[0] + 1;
+
+          const missingNumbers = [];
+
+          while (betweenNumber < framingNumbers[framingNumbers.length - 1]) {
+            missingNumbers.push(`${betweenNumber}-${theOnlyColumn}`);
+            betweenNumber++;
+          }
+
+          missingNumbers.forEach((entry) => {
+            if (
+              entry in cells &&
+              typeof cells[entry] === "string" &&
+              !SPECIAL_CELL_TYPES.includes(cells[entry])
+            ) {
+              const [row] = splitBrickName(entry);
+              if (!rows.includes(row)) {
+                rows.push(row);
+              }
+            }
+          });
+
+          if (!checkConsecutiveNumbers(rows)) {
+            toast.error("Das Wort muss zusammenhängend sein.");
+            return;
+          }
         }
       }
     }
