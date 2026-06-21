@@ -1,18 +1,19 @@
 //import useSWR from "swr";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { CATEGORIES, SPECIAL_CELL_TYPES } from "@/constants/gameConstants";
+import { CATEGORIES } from "@/constants/gameConstants";
 import {
   checkConsecutiveNumbers,
   createTilebag,
   drawTilesFromTilebag,
   splitBrickName,
+  isPlayedTile,
+  getLettersFromCell,
 } from "@/utils/gameLogic";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
-import { env } from "@/next.config";
 
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
@@ -30,7 +31,7 @@ export default function HomePage() {
   useEffect(() => {
     async function loadWords() {
       try {
-        const response = await fetch("/words.json");
+        const response = await fetch("/words-17mb.json");
         if (!response.ok) {
           throw new Error(`Failed to load words: ${response.status}`);
         }
@@ -65,12 +66,8 @@ export default function HomePage() {
   function handleCellClick(row, column) {
     const cellIndex = `${row}-${column}`;
     const isTile = cellIndex in cells && typeof cells[cellIndex] === "object";
-    const isPlayedTile =
-      cellIndex in cells &&
-      typeof cells[cellIndex] === "string" &&
-      !SPECIAL_CELL_TYPES.includes(cells[cellIndex]);
 
-    if (isPlayedTile) return;
+    if (isPlayedTile(cellIndex, cells)) return;
 
     if (!chosenTile && !isTile) return;
 
@@ -192,16 +189,12 @@ export default function HomePage() {
         neighbors.add(down);
       }
     });
-
     currentMove.forEach((move) => {
       neighbors.delete(move);
     });
 
-    const dockingTiles = Array.from(neighbors).filter(
-      (neighbor) =>
-        neighbor in cells &&
-        typeof cells[neighbor] === "string" &&
-        !SPECIAL_CELL_TYPES.includes(cells[neighbor])
+    const dockingTiles = Array.from(neighbors).filter((neighbor) =>
+      isPlayedTile(neighbor, cells)
     );
 
     if (dockingTiles.length === 0 && !isFirstWord) {
@@ -217,7 +210,10 @@ export default function HomePage() {
       return;
     }
 
+    let alignment;
+
     if (rowSet.size === 1) {
+      alignment = "row";
       if (!checkConsecutiveNumbers(columns)) {
         if (isFirstWord) {
           toast.error("Das Wort muss zusammenhängend sein.");
@@ -248,11 +244,7 @@ export default function HomePage() {
           }
 
           missingNumbers.forEach((entry) => {
-            if (
-              entry in cells &&
-              typeof cells[entry] === "string" &&
-              !SPECIAL_CELL_TYPES.includes(cells[entry])
-            ) {
+            if (isPlayedTile(entry, cells)) {
               const [, column] = splitBrickName(entry);
               if (!columns.includes(column)) {
                 columns.push(column);
@@ -267,7 +259,9 @@ export default function HomePage() {
         }
       }
     }
+
     if (columnSet.size === 1) {
+      alignment = "column";
       if (!checkConsecutiveNumbers(rows)) {
         if (isFirstWord) {
           toast.error("Das Wort muss zusammenhängend sein.");
@@ -297,11 +291,7 @@ export default function HomePage() {
           }
 
           missingNumbers.forEach((entry) => {
-            if (
-              entry in cells &&
-              typeof cells[entry] === "string" &&
-              !SPECIAL_CELL_TYPES.includes(cells[entry])
-            ) {
+            if (isPlayedTile(entry, cells)) {
               const [row] = splitBrickName(entry);
               if (!rows.includes(row)) {
                 rows.push(row);
@@ -317,9 +307,180 @@ export default function HomePage() {
       }
     }
 
+    const words = buildWords(rows, columns, dockingTiles, alignment);
+    const allWordsExist = words.every((word) => checkWordExists(word));
+
+    if (!allWordsExist) {
+      const invalidWord = words.find((word) => !checkWordExists(word));
+      toast.error(`${invalidWord} existiert nicht.`);
+      return;
+    }
+
     toast.success("Wort gespielt.");
 
     finalizeMove();
+  }
+
+  function buildWords(rows, columns, dockingTiles, alignment) {
+    let letters = [];
+    const lettersArray = [];
+
+    //---ROW---
+    if (alignment === "row") {
+      const row = [...rows][0];
+
+      columns.sort((a, b) => a - b);
+
+      let nextTile = `${row}-${columns[0] - 1}`;
+      while (isPlayedTile(nextTile, cells)) {
+        const [, newColumn] = splitBrickName(nextTile);
+        columns.unshift(newColumn);
+        nextTile = `${row}-${columns[0] - 1}`;
+      }
+
+      nextTile = `${row}-${columns[columns.length - 1] + 1}`;
+      while (isPlayedTile(nextTile, cells)) {
+        const [, newColumn] = splitBrickName(nextTile);
+        columns.push(newColumn);
+        nextTile = `${row}-${columns[columns.length - 1] + 1}`;
+      }
+
+      letters = getLettersFromCell(
+        columns,
+        cells,
+        (column) => `${row}-${column}`
+      );
+      lettersArray.push(letters);
+
+      letters = [];
+
+      const lastDockings = dockingTiles.filter(
+        (tile) => splitBrickName(tile)[0] !== row
+      );
+
+      const newRows = [];
+      const dockingsByColumn = {};
+
+      lastDockings.forEach((tile) => {
+        const [, tileColumn] = splitBrickName(tile);
+        if (!dockingsByColumn[tileColumn]) dockingsByColumn[tileColumn] = [];
+        dockingsByColumn[tileColumn].push(tile);
+      });
+
+      Object.entries(dockingsByColumn).forEach(([column, tiles]) => {
+        newRows.length = 0;
+        newRows.push(row);
+
+        tiles.forEach((tile) => {
+          const [tileRow] = splitBrickName(tile);
+
+          nextTile = tile;
+          if (tileRow < row) {
+            while (isPlayedTile(nextTile, cells)) {
+              const [newRow] = splitBrickName(nextTile);
+              newRows.unshift(newRow);
+              nextTile = `${newRows[0] - 1}-${column}`;
+            }
+          }
+
+          if (tileRow > row) {
+            while (isPlayedTile(nextTile, cells)) {
+              const [newRow] = splitBrickName(nextTile);
+              newRows.push(newRow);
+              nextTile = `${newRows[newRows.length - 1] + 1}-${column}`;
+            }
+          }
+        });
+
+        letters = getLettersFromCell(
+          newRows,
+          cells,
+          (row) => `${row}-${column}`
+        );
+
+        lettersArray.push(letters);
+      });
+    }
+
+    //---COLUMN---
+    if (alignment === "column") {
+      const column = [...columns][0];
+
+      rows.sort((a, b) => a - b);
+      //check up
+      let nextTile = `${rows[0] - 1}-${column}`;
+      while (isPlayedTile(nextTile, cells)) {
+        const [newRow] = splitBrickName(nextTile);
+        rows.unshift(newRow);
+        nextTile = `${rows[0] - 1}-${column}`;
+      }
+      //check down
+      nextTile = `${rows[rows.length - 1] + 1}-${column}`;
+      while (isPlayedTile(nextTile, cells)) {
+        const [newRow] = splitBrickName(nextTile);
+        rows.push(newRow);
+        nextTile = `${rows[rows.length - 1] + 1}-${column}`;
+      }
+
+      letters = getLettersFromCell(rows, cells, (row) => `${row}-${column}`);
+      lettersArray.push(letters);
+
+      letters = [];
+
+      const lastDockings = dockingTiles.filter(
+        (tile) => splitBrickName(tile)[1] !== column
+      );
+
+      const newColumns = [];
+      const dockingsByRow = {};
+
+      lastDockings.forEach((tile) => {
+        const [tileRow] = splitBrickName(tile);
+        if (!dockingsByRow[tileRow]) dockingsByRow[tileRow] = [];
+        dockingsByRow[tileRow].push(tile);
+      });
+
+      Object.entries(dockingsByRow).forEach(([row, tiles]) => {
+        newColumns.length = 0;
+        newColumns.push(column);
+
+        tiles.forEach((tile) => {
+          const [, tileColumn] = splitBrickName(tile);
+
+          nextTile = tile;
+          if (tileColumn < column) {
+            while (isPlayedTile(nextTile, cells)) {
+              const [, newColumn] = splitBrickName(nextTile);
+              newColumns.unshift(newColumn);
+              nextTile = `${row}-${newColumns[0] - 1}`;
+            }
+          }
+
+          if (tileColumn > column) {
+            while (isPlayedTile(nextTile, cells)) {
+              const [, newColumn] = splitBrickName(nextTile);
+              newColumns.push(newColumn);
+              nextTile = `${row}-${newColumns[newColumns.length - 1] + 1}`;
+            }
+          }
+        });
+
+        letters = getLettersFromCell(
+          newColumns,
+          cells,
+          (column) => `${row}-${column}`
+        );
+        lettersArray.push(letters);
+      });
+    }
+
+    const words = lettersArray.map((letters) => letters.join(""));
+
+    return words;
+  }
+
+  function checkWordExists(word) {
+    return wordSet.has(word);
   }
 
   function finalizeMove() {
@@ -353,7 +514,7 @@ export default function HomePage() {
   // if (!gameData) {
   //   return <h1>No games.</h1>;
   // }
-
+  //console.log(wordSet);
   return (
     <>
       <h1>Scrabboli</h1>
