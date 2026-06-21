@@ -49,3 +49,11 @@ export function isPlayedTile(key, cells) {
     !SPECIAL_CELL_TYPES.includes(cells[key])
   );
 }
+
+export function getLettersFromCell(positions, cells, getKey) {
+  return positions.map((position) => {
+    const key = getKey(position);
+    const tile = cells[key];
+    return typeof tile === "string" ? tile.slice(0, 1) : tile.letter;
+  });
+}

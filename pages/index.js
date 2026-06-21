@@ -1,19 +1,19 @@
 //import useSWR from "swr";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { CATEGORIES, SPECIAL_CELL_TYPES } from "@/constants/gameConstants";
+import { CATEGORIES } from "@/constants/gameConstants";
 import {
   checkConsecutiveNumbers,
   createTilebag,
   drawTilesFromTilebag,
   splitBrickName,
   isPlayedTile,
+  getLettersFromCell,
 } from "@/utils/gameLogic";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
-import next from "next";
 
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
@@ -31,7 +31,7 @@ export default function HomePage() {
   useEffect(() => {
     async function loadWords() {
       try {
-        const response = await fetch("/words.json");
+        const response = await fetch("/words-17mb.json");
         if (!response.ok) {
           throw new Error(`Failed to load words: ${response.status}`);
         }
@@ -189,15 +189,14 @@ export default function HomePage() {
         neighbors.add(down);
       }
     });
-    console.log("neighbors: ", neighbors);
     currentMove.forEach((move) => {
       neighbors.delete(move);
     });
-    console.log(neighbors);
+
     const dockingTiles = Array.from(neighbors).filter((neighbor) =>
       isPlayedTile(neighbor, cells)
     );
-    console.log("dockingTiles: ", dockingTiles);
+
     if (dockingTiles.length === 0 && !isFirstWord) {
       toast.error("Das neue Wort muss an ein bestehendes angelegt werden.");
       return;
@@ -307,17 +306,16 @@ export default function HomePage() {
         }
       }
     }
-    console.log("currentMove: ", currentMove);
-    console.log("rows: ", rows);
-    console.log("columns: ", columns);
-    console.log(cells);
+
     const words = buildWords(rows, columns, dockingTiles, alignment);
-    words.map((word) => {
-      if (!checkWordExists(word)) {
-        toast.error(`${word} existiert nicht.`);
-        return;
-      }
-    });
+    const allWordsExist = words.every((word) => checkWordExists(word));
+
+    if (!allWordsExist) {
+      const invalidWord = words.find((word) => !checkWordExists(word));
+      toast.error(`${invalidWord} existiert nicht.`);
+      return;
+    }
+
     toast.success("Wort gespielt.");
 
     finalizeMove();
@@ -326,7 +324,6 @@ export default function HomePage() {
   function buildWords(rows, columns, dockingTiles, alignment) {
     let letters = [];
     const lettersArray = [];
-    console.log(alignment);
 
     //---ROW---
     if (alignment === "row") {
@@ -348,16 +345,61 @@ export default function HomePage() {
         nextTile = `${row}-${columns[columns.length - 1] + 1}`;
       }
 
-      console.log("columns: ", columns);
-      letters = columns.map((column) => {
-        const key = `${row}-${column}`;
+      letters = getLettersFromCell(
+        columns,
+        cells,
+        (column) => `${row}-${column}`
+      );
+      lettersArray.push(letters);
 
-        const tile = cells[key];
+      letters = [];
 
-        return typeof tile === "string" ? tile.slice(0, 1) : tile.letter;
+      const lastDockings = dockingTiles.filter(
+        (tile) => splitBrickName(tile)[0] !== row
+      );
+
+      const newRows = [];
+      const dockingsByColumn = {};
+
+      lastDockings.forEach((tile) => {
+        const [, tileColumn] = splitBrickName(tile);
+        if (!dockingsByColumn[tileColumn]) dockingsByColumn[tileColumn] = [];
+        dockingsByColumn[tileColumn].push(tile);
       });
 
-      lettersArray.push(letters);
+      Object.entries(dockingsByColumn).forEach(([column, tiles]) => {
+        newRows.length = 0;
+        newRows.push(row);
+
+        tiles.forEach((tile) => {
+          const [tileRow] = splitBrickName(tile);
+
+          nextTile = tile;
+          if (tileRow < row) {
+            while (isPlayedTile(nextTile, cells)) {
+              const [newRow] = splitBrickName(nextTile);
+              newRows.unshift(newRow);
+              nextTile = `${newRows[0] - 1}-${column}`;
+            }
+          }
+
+          if (tileRow > row) {
+            while (isPlayedTile(nextTile, cells)) {
+              const [newRow] = splitBrickName(nextTile);
+              newRows.push(newRow);
+              nextTile = `${newRows[newRows.length - 1] + 1}-${column}`;
+            }
+          }
+        });
+
+        letters = getLettersFromCell(
+          newRows,
+          cells,
+          (row) => `${row}-${column}`
+        );
+
+        lettersArray.push(letters);
+      });
     }
 
     //---COLUMN---
@@ -380,83 +422,59 @@ export default function HomePage() {
         nextTile = `${rows[rows.length - 1] + 1}-${column}`;
       }
 
-      letters = rows.map((row) => {
-        const key = `${row}-${column}`;
-
-        const tile = cells[key];
-
-        return typeof tile === "string" ? tile.slice(0, 1) : tile.letter;
-      });
-
+      letters = getLettersFromCell(rows, cells, (row) => `${row}-${column}`);
       lettersArray.push(letters);
+
       letters = [];
-      // --check dockingTiles for docking letters that are not in the column
 
       const lastDockings = dockingTiles.filter(
         (tile) => splitBrickName(tile)[1] !== column
       );
-      console.log("lastDockings: ", lastDockings);
 
       const newColumns = [];
-      let row = 0;
+      const dockingsByRow = {};
 
-      lastDockings.forEach((tile, index) => {
-        const [tileRow, tileColumn] = splitBrickName(tile);
-        if (tileRow !== row) {
-          if (index !== 0) {
-            letters = newColumns.map((column) => {
-              const key = `${row}-${column}`;
+      lastDockings.forEach((tile) => {
+        const [tileRow] = splitBrickName(tile);
+        if (!dockingsByRow[tileRow]) dockingsByRow[tileRow] = [];
+        dockingsByRow[tileRow].push(tile);
+      });
 
-              const tile = cells[key];
+      Object.entries(dockingsByRow).forEach(([row, tiles]) => {
+        newColumns.length = 0;
+        newColumns.push(column);
 
-              return typeof tile === "string" ? tile.slice(0, 1) : tile.letter;
-            });
+        tiles.forEach((tile) => {
+          const [, tileColumn] = splitBrickName(tile);
 
-            lettersArray.push(letters);
+          nextTile = tile;
+          if (tileColumn < column) {
+            while (isPlayedTile(nextTile, cells)) {
+              const [, newColumn] = splitBrickName(nextTile);
+              newColumns.unshift(newColumn);
+              nextTile = `${row}-${newColumns[0] - 1}`;
+            }
           }
-          newColumns.length = 0;
-          newColumns.push(column);
-          row = tileRow;
-        }
 
-        nextTile = tile;
-        if (tileColumn < column) {
-          while (isPlayedTile(nextTile, cells)) {
-            const [, newColumn] = splitBrickName(nextTile);
-
-            newColumns.unshift(newColumn);
-            nextTile = `${row}-${newColumns[0] - 1}`;
+          if (tileColumn > column) {
+            while (isPlayedTile(nextTile, cells)) {
+              const [, newColumn] = splitBrickName(nextTile);
+              newColumns.push(newColumn);
+              nextTile = `${row}-${newColumns[newColumns.length - 1] + 1}`;
+            }
           }
-        }
+        });
 
-        if (tileColumn > column) {
-          while (isPlayedTile(nextTile, cells)) {
-            const [, newColumn] = splitBrickName(nextTile);
-            console.log("nreColumn: ", newColumn);
-            newColumns.push(newColumn);
-            nextTile = `${row}-${newColumns[newColumns.length - 1] + 1}`;
-          }
-        }
-
-        if (index === lastDockings.length - 1) {
-          letters = newColumns.map((column) => {
-            const key = `${row}-${column}`;
-
-            const tile = cells[key];
-
-            return typeof tile === "string" ? tile.slice(0, 1) : tile.letter;
-          });
-
-          lettersArray.push(letters);
-        }
+        letters = getLettersFromCell(
+          newColumns,
+          cells,
+          (column) => `${row}-${column}`
+        );
+        lettersArray.push(letters);
       });
     }
 
-    console.log("lettersArray: ", lettersArray);
-
     const words = lettersArray.map((letters) => letters.join(""));
-
-    console.log(words);
 
     return words;
   }
