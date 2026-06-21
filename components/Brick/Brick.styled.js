@@ -3,11 +3,16 @@ import styled, { css } from "styled-components";
 export const StyledLetter = styled.div`
   grid-column: 1;
   grid-row: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding-bottom: 0.5em;
 
   ${(props) =>
     props.$category === "tile" &&
     css`
-      font-size: 1.3rem;
+      font-size: 1rem;
     `}
 `;
 
