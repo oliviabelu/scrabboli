@@ -14,6 +14,7 @@ import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
+import { Spool } from "lucide-react";
 
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
@@ -307,6 +308,16 @@ export default function HomePage() {
       }
     }
 
+    if (currentMove.length === 1) {
+      const [moveRow] = splitBrickName(currentMove[0]);
+
+      const isHorizontalDocking = dockingTiles.some((tile) => {
+        const [tileRow] = splitBrickName(tile);
+        return tileRow === moveRow;
+      });
+
+      alignment = isHorizontalDocking ? "row" : "column";
+    }
     const words = buildWords(rows, columns, dockingTiles, alignment);
     const allWordsExist = words.every((word) => checkWordExists(word));
 
