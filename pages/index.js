@@ -26,6 +26,7 @@ export default function HomePage() {
   const [currentMove, setCurrentMove] = useState([]);
   const [chosenJokerPosition, setChosenJokerPosition] = useState(null);
   const [isFirstWord, setIsFirstWord] = useState(true);
+  const [score, setScore] = useState(0);
 
   //for later, when data is needed
   //const { data: gameData, isLoading, error } = useSWR("/api/games");
@@ -333,14 +334,14 @@ export default function HomePage() {
       return;
     }
 
-    const totalScore = wordResults.reduce((sum, { score }) => sum + score, 0);
+    const roundScore = wordResults.reduce((sum, { score }) => sum + score, 0);
     const wordList = wordResults
       .map(({ word, score }) => `${word} (${score})`)
       .join(", ");
 
-    toast.success(`${wordList} - ${totalScore} Punkte`);
+    toast.success(`${wordList} - ${roundScore} Punkte`);
 
-    finalizeMove();
+    finalizeMove(roundScore);
   }
 
   function buildWords(rows, columns, dockingTiles, alignment) {
@@ -529,7 +530,8 @@ export default function HomePage() {
     return wordSet.has(word);
   }
 
-  function finalizeMove() {
+  function finalizeMove(roundScore) {
+    setScore(score + roundScore);
     setIsFirstWord(false);
     const newCells = { ...cells };
     currentMove.forEach((move) => {
@@ -564,6 +566,7 @@ export default function HomePage() {
   return (
     <>
       <h1>Scrabboli</h1>
+      <div>Punkte: {score}</div>
       <TilebagProgress tilebag={tilebag} />
 
       {chosenJokerPosition && <JokerLetter onClick={handleJokerLetterClick} />}
