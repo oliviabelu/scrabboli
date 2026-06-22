@@ -9,6 +9,7 @@ import {
   splitBrickName,
   isPlayedTile,
   getLettersFromCell,
+  calculateWordScore,
 } from "@/utils/gameLogic";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
@@ -25,6 +26,7 @@ export default function HomePage() {
   const [currentMove, setCurrentMove] = useState([]);
   const [chosenJokerPosition, setChosenJokerPosition] = useState(null);
   const [isFirstWord, setIsFirstWord] = useState(true);
+  const [score, setScore] = useState(0);
 
   //for later, when data is needed
   //const { data: gameData, isLoading, error } = useSWR("/api/games");
@@ -319,23 +321,32 @@ export default function HomePage() {
 
       alignment = isHorizontalDocking ? "row" : "column";
     }
-    const words = buildWords(rows, columns, dockingTiles, alignment);
-    const allWordsExist = words.every((word) => checkWordExists(word));
+    const wordResults = buildWords(rows, columns, dockingTiles, alignment);
+    const allWordsExist = wordResults.every(({ word }) =>
+      checkWordExists(word)
+    );
 
     if (!allWordsExist) {
-      const invalidWord = words.find((word) => !checkWordExists(word));
-      toast.error(`${invalidWord} existiert nicht.`);
+      const invalidWord = wordResults.find(
+        ({ word }) => !checkWordExists(word)
+      );
+      toast.error(`${invalidWord.word} existiert nicht.`);
       return;
     }
 
-    toast.success("Wort gespielt.");
+    const roundScore = wordResults.reduce((sum, { score }) => sum + score, 0);
+    const wordList = wordResults
+      .map(({ word, score }) => `${word} (${score})`)
+      .join(", ");
 
-    finalizeMove();
+    toast.success(`${wordList} - ${roundScore} Punkte`);
+
+    finalizeMove(roundScore);
   }
 
   function buildWords(rows, columns, dockingTiles, alignment) {
     let letters = [];
-    const lettersArray = [];
+    const wordResults = [];
 
     //---ROW---
     if (alignment === "row") {
@@ -362,7 +373,15 @@ export default function HomePage() {
         cells,
         (column) => `${row}-${column}`
       );
-      lettersArray.push(letters);
+
+      wordResults.push({
+        word: letters.join(""),
+        score: calculateWordScore(
+          columns,
+          cells,
+          (column) => `${row}-${column}`
+        ),
+      });
 
       letters = [];
 
@@ -409,8 +428,14 @@ export default function HomePage() {
           cells,
           (row) => `${row}-${column}`
         );
-
-        lettersArray.push(letters);
+        wordResults.push({
+          word: letters.join(""),
+          score: calculateWordScore(
+            newRows,
+            cells,
+            (row) => `${row}-${column}`
+          ),
+        });
       });
     }
 
@@ -435,7 +460,11 @@ export default function HomePage() {
       }
 
       letters = getLettersFromCell(rows, cells, (row) => `${row}-${column}`);
-      lettersArray.push(letters);
+
+      wordResults.push({
+        word: letters.join(""),
+        score: calculateWordScore(rows, cells, (row) => `${row}-${column}`),
+      });
 
       letters = [];
 
@@ -482,20 +511,27 @@ export default function HomePage() {
           cells,
           (column) => `${row}-${column}`
         );
-        lettersArray.push(letters);
+
+        wordResults.push({
+          word: letters.join(""),
+          score: calculateWordScore(
+            newColumns,
+            cells,
+            (column) => `${row}-${column}`
+          ),
+        });
       });
     }
 
-    const words = lettersArray.map((letters) => letters.join(""));
-
-    return words;
+    return wordResults;
   }
 
   function checkWordExists(word) {
     return wordSet.has(word);
   }
 
-  function finalizeMove() {
+  function finalizeMove(roundScore) {
+    setScore(score + roundScore);
     setIsFirstWord(false);
     const newCells = { ...cells };
     currentMove.forEach((move) => {
@@ -530,6 +566,7 @@ export default function HomePage() {
   return (
     <>
       <h1>Scrabboli</h1>
+      <div>Punkte: {score}</div>
       <TilebagProgress tilebag={tilebag} />
 
       {chosenJokerPosition && <JokerLetter onClick={handleJokerLetterClick} />}
