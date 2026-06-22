@@ -9,6 +9,7 @@ import {
   splitBrickName,
   isPlayedTile,
   getLettersFromCell,
+  calculateWordScore,
 } from "@/utils/gameLogic";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
@@ -328,12 +329,13 @@ export default function HomePage() {
       return;
     }
 
-    toast.success("Wort gespielt.");
+    toast.success(`${words.toString()} gespielt.`);
 
     finalizeMove();
   }
 
   function buildWords(rows, columns, dockingTiles, alignment) {
+    console.log(cells);
     let letters = [];
     const lettersArray = [];
 
@@ -363,6 +365,13 @@ export default function HomePage() {
         (column) => `${row}-${column}`
       );
       lettersArray.push(letters);
+
+      const wordScore = calculateWordScore(
+        columns,
+        cells,
+        (column) => `${row}-${column}`
+      );
+      console.log(wordScore);
 
       letters = [];
 

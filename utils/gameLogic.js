@@ -2,6 +2,7 @@ import {
   TILES,
   TILENUMBERS,
   SPECIAL_CELL_TYPES,
+  CATEGORIES,
 } from "@/constants/gameConstants";
 
 export function drawTilesFromTilebag(tiles, tilebag) {
@@ -56,4 +57,54 @@ export function getLettersFromCell(positions, cells, getKey) {
     const tile = cells[key];
     return typeof tile === "string" ? tile.slice(0, 1) : tile.letter;
   });
+}
+
+export function calculateWordScore(positions, cells, getKey) {
+  let multiply = [];
+
+  const values = positions.map((position) => {
+    const key = getKey(position);
+    const tile = cells[key];
+
+    let value = 0;
+
+    if (typeof tile === "string") {
+      [, value] = splitBrickName(tile);
+      value = Number(value);
+    }
+    if (typeof tile === "object") {
+      value = tile.value;
+
+      if (key in CATEGORIES) {
+        switch (CATEGORIES[key]) {
+          case "2B":
+            value = 2 * value;
+            break;
+          case "3B":
+            value = 3 * value;
+            break;
+          case "2W":
+            multiply.push(2);
+            break;
+          case "3W":
+            multiply.push(3);
+            break;
+          case "start":
+            multiply.push(2);
+            break;
+        }
+      }
+    }
+    return value;
+  });
+
+  const sum = values.reduce(
+    (accumulator, currentValue) => accumulator + currentValue
+  );
+
+  const wordMultiplier = multiply.reduce(
+    (accumulator, currentValue) => accumulator * currentValue,
+    1
+  );
+  return sum * wordMultiplier;
 }
