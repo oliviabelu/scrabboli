@@ -320,24 +320,32 @@ export default function HomePage() {
 
       alignment = isHorizontalDocking ? "row" : "column";
     }
-    const words = buildWords(rows, columns, dockingTiles, alignment);
-    const allWordsExist = words.every((word) => checkWordExists(word));
+    const wordResults = buildWords(rows, columns, dockingTiles, alignment);
+    const allWordsExist = wordResults.every(({ word }) =>
+      checkWordExists(word)
+    );
 
     if (!allWordsExist) {
-      const invalidWord = words.find((word) => !checkWordExists(word));
-      toast.error(`${invalidWord} existiert nicht.`);
+      const invalidWord = wordResults.find(
+        ({ word }) => !checkWordExists(word)
+      );
+      toast.error(`${invalidWord.word} existiert nicht.`);
       return;
     }
 
-    toast.success(`${words.toString()} gespielt.`);
+    const totalScore = wordResults.reduce((sum, { score }) => sum + score, 0);
+    const wordList = wordResults
+      .map(({ word, score }) => `${word} (${score})`)
+      .join(", ");
+
+    toast.success(`${wordList} - ${totalScore} Punkte`);
 
     finalizeMove();
   }
 
   function buildWords(rows, columns, dockingTiles, alignment) {
-    console.log(cells);
     let letters = [];
-    const lettersArray = [];
+    const wordResults = [];
 
     //---ROW---
     if (alignment === "row") {
@@ -364,14 +372,15 @@ export default function HomePage() {
         cells,
         (column) => `${row}-${column}`
       );
-      lettersArray.push(letters);
 
-      const wordScore = calculateWordScore(
-        columns,
-        cells,
-        (column) => `${row}-${column}`
-      );
-      console.log(wordScore);
+      wordResults.push({
+        word: letters.join(""),
+        score: calculateWordScore(
+          columns,
+          cells,
+          (column) => `${row}-${column}`
+        ),
+      });
 
       letters = [];
 
@@ -418,8 +427,14 @@ export default function HomePage() {
           cells,
           (row) => `${row}-${column}`
         );
-
-        lettersArray.push(letters);
+        wordResults.push({
+          word: letters.join(""),
+          score: calculateWordScore(
+            newRows,
+            cells,
+            (row) => `${row}-${column}`
+          ),
+        });
       });
     }
 
@@ -444,7 +459,11 @@ export default function HomePage() {
       }
 
       letters = getLettersFromCell(rows, cells, (row) => `${row}-${column}`);
-      lettersArray.push(letters);
+
+      wordResults.push({
+        word: letters.join(""),
+        score: calculateWordScore(rows, cells, (row) => `${row}-${column}`),
+      });
 
       letters = [];
 
@@ -491,13 +510,19 @@ export default function HomePage() {
           cells,
           (column) => `${row}-${column}`
         );
-        lettersArray.push(letters);
+
+        wordResults.push({
+          word: letters.join(""),
+          score: calculateWordScore(
+            newColumns,
+            cells,
+            (column) => `${row}-${column}`
+          ),
+        });
       });
     }
 
-    const words = lettersArray.map((letters) => letters.join(""));
-
-    return words;
+    return wordResults;
   }
 
   function checkWordExists(word) {
