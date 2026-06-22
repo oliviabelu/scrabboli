@@ -43,6 +43,8 @@ export const StyledBrick = styled.button`
 
   background-color: var(--cell);
 
+  -webkit-text-size-adjust: none; /* verhindert automatische Textgrößenanpassung */
+
   ${(props) =>
     props.$category === "tile" &&
     css`
