@@ -62,7 +62,6 @@ export default function HomePage() {
   }, []);
 
   function handleTileClick(tile, index) {
-    console.log("chosenTile: ", chosenTile);
     index === chosenTile?.index
       ? setChosenTile(null)
       : setChosenTile({ ...tile, index });
@@ -122,7 +121,7 @@ export default function HomePage() {
       setCurrentMove([...currentMove, `${row}-${column}`]);
     }
   }
-  console.log("cells: ", cells);
+
   function handleRecall() {
     setRackTiles(
       rackTiles.map((rackTile) =>
@@ -551,7 +550,7 @@ export default function HomePage() {
       rackTiles,
       tilebag
     );
-    console.log(drawnTiles);
+
     setRackTiles(drawnTiles);
     setTilebag(currentTilebag);
   }
