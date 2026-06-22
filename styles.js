@@ -2,6 +2,7 @@ import { createGlobalStyle } from "styled-components";
 
 export default createGlobalStyle`
 
+
 :root {
 
 //variables
@@ -9,28 +10,28 @@ export default createGlobalStyle`
 --tile-size: 10vw;
 --brick-border-radius: 0.5rem;
 
---cell: #d8d8d8;
+--cell:  #fff1e4;// #f1f1f1;
 --cell-margin: 0.05rem;;
 
---tile: #528645;
+--tile: #45867d;// #528645;
 --tile-margin: 0.2rem;
 
---tile-empty : #ffffff;
+--tile-empty : var(--off-white); // #ffffff;
 
 --cell-start: #fff4b3;
 --cell-start-color: #3b3200;
 
 --cell-double-letter: #faf4c1;
---cell-double-letter-color: #ccae03;
+--cell-double-letter-color: #463b00; //#ccae03;
 
 --cell-triple-letter: #ddfff8;
---cell-triple-letter-color: #009e69;
+--cell-triple-letter-color: #003121; // #009e69;
 
 --cell-double-word: #bfdcec;
---cell-double-word-color: #0065a0;
+--cell-double-word-color: #002b44; //#0065a0;
 
 --cell-triple-word: #fcd3dd;
---cell-triple-word-color: #b1445f;
+--cell-triple-word-color: #38000e; //#b1445f;
 
 --off-white: #fdf9f5;
 }
@@ -43,7 +44,7 @@ export default createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    font-family: system-ui;
+    font-family: system-ui; // var(--font-rubik);
     background-color: var(--off-white);
   }
 `;
