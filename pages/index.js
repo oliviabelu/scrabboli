@@ -62,6 +62,7 @@ export default function HomePage() {
   }, []);
 
   function handleTileClick(tile, index) {
+    console.log("chosenTile: ", chosenTile);
     index === chosenTile?.index
       ? setChosenTile(null)
       : setChosenTile({ ...tile, index });
@@ -121,11 +122,13 @@ export default function HomePage() {
       setCurrentMove([...currentMove, `${row}-${column}`]);
     }
   }
-
+  console.log("cells: ", cells);
   function handleRecall() {
     setRackTiles(
       rackTiles.map((rackTile) =>
-        rackTile.isPlayed ? { ...rackTile, isPlayed: false } : rackTile
+        rackTile.isPlayed && !rackTile.isEmpty
+          ? { ...rackTile, isPlayed: false }
+          : rackTile
       )
     );
     const recallCells = { ...cells };
@@ -548,7 +551,7 @@ export default function HomePage() {
       rackTiles,
       tilebag
     );
-
+    console.log(drawnTiles);
     setRackTiles(drawnTiles);
     setTilebag(currentTilebag);
   }
