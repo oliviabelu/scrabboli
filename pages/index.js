@@ -14,7 +14,7 @@ import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
-import { Spool } from "lucide-react";
+import TilebagProgress from "@/components/TilebagProgress";
 
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
@@ -32,14 +32,15 @@ export default function HomePage() {
   useEffect(() => {
     async function loadWords() {
       try {
-        const response = await fetch("/words-17mb.json");
+        const response = await fetch("/wordsList.json");
         if (!response.ok) {
           throw new Error(`Failed to load words: ${response.status}`);
         }
 
         const wordArray = await response.json();
 
-        const set = new Set(wordArray.map((entry) => entry.word));
+        const set = new Set(wordArray); //.map((entry) => entry.word));
+
         setWordSet(set);
       } catch (error) {
         console.error(error);
@@ -529,6 +530,7 @@ export default function HomePage() {
   return (
     <>
       <h1>Scrabboli</h1>
+      <TilebagProgress tilebag={tilebag} />
 
       {chosenJokerPosition && <JokerLetter onClick={handleJokerLetterClick} />}
       <Board

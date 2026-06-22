@@ -16,6 +16,9 @@ export default function Brick({
       onClick={onClick}
       $category={category}
       $isChosenTile={isChosenTile}
+      autoCorrect="off"
+      autoCapitalize="none"
+      spellCheck={false}
     >
       {!isTile ? (
         isJokerLetter ? (
