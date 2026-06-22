@@ -11,14 +11,12 @@ import {
   getLettersFromCell,
   calculateWordScore,
 } from "@/utils/gameLogic";
-import { StyledTitle } from "./index.styled";
+import { StyledTitle, StyledGameInfo } from "./index.styled";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
 import TilebagProgress from "@/components/TilebagProgress";
-import { StyledGameInfo } from "./index.styled";
-
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
   const [tilebag, setTilebag] = useState(createTilebag);
