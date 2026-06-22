@@ -49,6 +49,8 @@ export const StyledBrick = styled.button`
 
   background-color: var(--cell);
 
+  box-shadow: 1px 1px 3px grey;
+
   padding: 0;
 
   -webkit-text-size-adjust: none; /* verhindert automatische Textgrößenanpassung */
@@ -72,13 +74,14 @@ export const StyledBrick = styled.button`
   ${(props) =>
     props.$isChosenTile &&
     css`
-      border: solid 0.1rem black;
+      border: solid 0.1rem var(--cell-double-letter);
     `}
 
   ${(props) =>
     props.$category === "emptyTile" &&
     css`
       background-color: var(--tile-empty);
+      box-shadow: none;
 
       width: var(--tile-size);
       height: var(--tile-size);
@@ -104,7 +107,10 @@ export const StyledBrick = styled.button`
     css`
       background-color: var(--cell-start);
       color: var(--cell-start-color);
-      font-size: 10px;
+      font-size: 8px;
+      font-weight: 400;
+      text-transform: uppercase;
+      overflow: hidden;
     `}
 
   ${(props) =>
@@ -112,6 +118,7 @@ export const StyledBrick = styled.button`
     css`
       background-color: var(--cell-double-letter);
       color: var(--cell-double-letter-color);
+      font-weight: 400;
     `}
 
     ${(props) =>
@@ -119,6 +126,7 @@ export const StyledBrick = styled.button`
     css`
       background-color: var(--cell-triple-letter);
       color: var(--cell-triple-letter-color);
+      font-weight: 400;
     `}
 
     ${(props) =>
@@ -126,6 +134,7 @@ export const StyledBrick = styled.button`
     css`
       background-color: var(--cell-double-word);
       color: var(--cell-double-word-color);
+      font-weight: 400;
     `}
 
     ${(props) =>
@@ -133,6 +142,7 @@ export const StyledBrick = styled.button`
     css`
       background-color: var(--cell-triple-word);
       color: var(--cell-triple-word-color);
+      font-weight: 400;
     `}
 
     ${(props) =>

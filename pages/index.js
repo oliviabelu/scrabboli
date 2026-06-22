@@ -11,6 +11,7 @@ import {
   getLettersFromCell,
   calculateWordScore,
 } from "@/utils/gameLogic";
+import { StyledTitle } from "./index.styled";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
@@ -62,6 +63,57 @@ export default function HomePage() {
   }, []);
 
   function handleTileClick(tile, index) {
+    if (chosenTile && typeof chosenTile === "string") {
+      const boardTile = cells[chosenTile];
+
+      const newRackTiles = [...rackTiles];
+      if (
+        newRackTiles[index].letter === boardTile.letter &&
+        newRackTiles[index].value === boardTile.value &&
+        newRackTiles[index].isPlayed === true
+      ) {
+        newRackTiles[index].isPlayed = false;
+      } else {
+        const newIndex = newRackTiles.findIndex(
+          (newRackTile) =>
+            newRackTile.letter === boardTile.letter &&
+            newRackTile.value === boardTile.value &&
+            newRackTile.isPlayed === true
+        );
+        [newRackTiles[newIndex], newRackTiles[index]] = [
+          newRackTiles[index],
+          newRackTiles[newIndex],
+        ];
+        newRackTiles[index].isPlayed = false;
+      }
+      setRackTiles(newRackTiles);
+
+      const newCells = { ...cells };
+      chosenTile in CATEGORIES
+        ? (newCells[chosenTile] = CATEGORIES[chosenTile])
+        : delete newCells[chosenTile];
+      setCells(newCells);
+      setCurrentMove(currentMove.filter((move) => move !== chosenTile));
+      setChosenTile(null);
+
+      return;
+    }
+
+    if (
+      chosenTile &&
+      typeof chosenTile === "object" &&
+      chosenTile.index !== index
+    ) {
+      const newRackTiles = [...rackTiles];
+      [newRackTiles[chosenTile.index], newRackTiles[index]] = [
+        newRackTiles[index],
+        newRackTiles[chosenTile.index],
+      ];
+      setRackTiles(newRackTiles);
+      setChosenTile(null);
+      return;
+    }
+
     index === chosenTile?.index
       ? setChosenTile(null)
       : setChosenTile({ ...tile, index });
@@ -109,7 +161,10 @@ export default function HomePage() {
         setChosenJokerPosition(cellIndex);
         return;
       }
-      setCells({ ...cells, [`${row}-${column}`]: chosenTile });
+      setCells({
+        ...cells,
+        [`${row}-${column}`]: { ...chosenTile, isPlayed: true },
+      });
       setRackTiles(
         rackTiles.map((rackTile, index) =>
           chosenTile.index === index
@@ -123,6 +178,8 @@ export default function HomePage() {
   }
 
   function handleRecall() {
+    //   const newRackTiles = [...rackTiles];
+
     setRackTiles(
       rackTiles.map((rackTile) =>
         rackTile.isPlayed && !rackTile.isEmpty
@@ -567,7 +624,7 @@ export default function HomePage() {
   //console.log(wordSet);
   return (
     <>
-      <h1>Scrabboli</h1>
+      <StyledTitle>Scrabboli</StyledTitle>
       <div>Punkte: {score}</div>
       <TilebagProgress tilebag={tilebag} />
 
