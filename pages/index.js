@@ -17,6 +17,7 @@ import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
 import TilebagProgress from "@/components/TilebagProgress";
+import { StyledGameInfo } from "./index.styled";
 
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
@@ -625,9 +626,10 @@ export default function HomePage() {
   return (
     <>
       <StyledTitle>Scrabboli</StyledTitle>
-      <div>Punkte: {score}</div>
-      <TilebagProgress tilebag={tilebag} />
-
+      <StyledGameInfo>
+        <div>Punkte: {score}</div>
+        <TilebagProgress tilebag={tilebag} />
+      </StyledGameInfo>
       {chosenJokerPosition && <JokerLetter onClick={handleJokerLetterClick} />}
       <Board
         //wordSet={wordSet}
@@ -642,7 +644,11 @@ export default function HomePage() {
         handleClick={handleTileClick}
       />
 
-      <GameNavBar onRecall={handleRecall} onPlayClick={handlePlayClick} />
+      <GameNavBar
+        onRecall={handleRecall}
+        onPlayClick={handlePlayClick}
+        currentMove={currentMove}
+      />
     </>
   );
 }

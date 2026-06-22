@@ -9,6 +9,8 @@ export const StyledLetter = styled.div`
   line-height: 1;
   padding-bottom: 0.1em;
 
+  color: var(--off-white);
+
   ${(props) =>
     props.$category === "tile" &&
     css`
@@ -25,6 +27,8 @@ export const StyledLetter = styled.div`
 export const StyledValue = styled.div`
   grid-column: 2;
   grid-row: 1;
+
+  color: var(--off-white);
 
   ${(props) =>
     props.$category === "boardTile" &&

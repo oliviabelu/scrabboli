@@ -6,3 +6,10 @@ export const StyledTitle = styled.h1`
   text-transform: uppercase;
   color: var(--tile);
 `;
+
+export const StyledGameInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem;
+`;
