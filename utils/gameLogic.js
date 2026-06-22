@@ -14,6 +14,9 @@ export function drawTilesFromTilebag(tiles, tilebag) {
     if (typeof rackTile === "number" || rackTile.isPlayed) {
       const randomIndex = Math.floor(Math.random() * currentTilebag.length);
       const drawnTile = currentTilebag[randomIndex];
+      if (!drawnTile) {
+        return { letter: "", value: "", isPlayed: false, isEmpty: true };
+      }
       currentTilebag = currentTilebag.toSpliced(randomIndex, 1);
 
       return { ...drawnTile, isPlayed: false };

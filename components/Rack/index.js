@@ -5,7 +5,8 @@ export default function Rack({ rackTiles, chosenTile, handleClick }) {
   return (
     <StyledTileList>
       {rackTiles.map((rackTile, index) => {
-        const category = rackTile.isPlayed ? "emptyTile" : "tile";
+        const category =
+          rackTile.isPlayed || rackTile.isEmpty ? "emptyTile" : "tile";
         const letter = category === "tile" ? rackTile.letter : "";
         const value = category === "tile" ? rackTile.value : "";
         const isChosenTile = index === chosenTile?.index;

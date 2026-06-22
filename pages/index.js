@@ -125,7 +125,9 @@ export default function HomePage() {
   function handleRecall() {
     setRackTiles(
       rackTiles.map((rackTile) =>
-        rackTile.isPlayed ? { ...rackTile, isPlayed: false } : rackTile
+        rackTile.isPlayed && !rackTile.isEmpty
+          ? { ...rackTile, isPlayed: false }
+          : rackTile
       )
     );
     const recallCells = { ...cells };
