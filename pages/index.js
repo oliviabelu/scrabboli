@@ -11,7 +11,7 @@ import {
   getLettersFromCell,
   calculateWordScore,
 } from "@/utils/gameLogic";
-import { StyledTitle, StyledGameInfo } from "./index.styled";
+import { StyledTitle, StyledGameInfo } from "../components/Game/index.styled";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
