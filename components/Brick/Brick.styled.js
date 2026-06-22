@@ -7,12 +7,18 @@ export const StyledLetter = styled.div`
   align-items: center;
   justify-content: center;
   line-height: 1;
-  padding-bottom: 0.5em;
+  padding-bottom: 0.1em;
 
   ${(props) =>
     props.$category === "tile" &&
     css`
-      font-size: 1rem;
+      font-size: 1.3rem;
+    `}
+
+  ${(props) =>
+    props.$category === "boardTile" &&
+    css`
+      font-size: 0.75rem;
     `}
 `;
 
@@ -42,6 +48,8 @@ export const StyledBrick = styled.button`
   font-weight: 600;
 
   background-color: var(--cell);
+
+  padding: 0;
 
   -webkit-text-size-adjust: none; /* verhindert automatische Textgrößenanpassung */
 
@@ -87,6 +95,8 @@ export const StyledBrick = styled.button`
       display: grid;
       grid-template-columns: 2fr 1fr;
       grid-template-rows: 1fr 2fr;
+
+      padding-bottom: 0.5em;
     `}
 
   ${(props) =>

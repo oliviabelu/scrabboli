@@ -14,6 +14,7 @@ import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
+import TilebagProgress from "@/components/TilebagProgress";
 
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
@@ -529,6 +530,7 @@ export default function HomePage() {
   return (
     <>
       <h1>Scrabboli</h1>
+      <TilebagProgress tilebag={tilebag} />
 
       {chosenJokerPosition && <JokerLetter onClick={handleJokerLetterClick} />}
       <Board
