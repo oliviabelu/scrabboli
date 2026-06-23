@@ -64,10 +64,11 @@ export default function HomePage() {
   function handleTileClick(tile, index) {
     if (chosenTile && typeof chosenTile === "string") {
       const boardTile = cells[chosenTile];
+      const originalLetter = boardTile.value === 0 ? "?" : boardTile.letter;
 
       const newRackTiles = [...rackTiles];
       if (
-        newRackTiles[index].letter === boardTile.letter &&
+        newRackTiles[index].letter === originalLetter &&
         newRackTiles[index].value === boardTile.value &&
         newRackTiles[index].isPlayed === true
       ) {
@@ -75,7 +76,7 @@ export default function HomePage() {
       } else {
         const newIndex = newRackTiles.findIndex(
           (newRackTile) =>
-            newRackTile.letter === boardTile.letter &&
+            newRackTile.letter === originalLetter &&
             newRackTile.value === boardTile.value &&
             newRackTile.isPlayed === true
         );
@@ -202,7 +203,7 @@ export default function HomePage() {
   function handleJokerLetterClick(letter) {
     setCells({
       ...cells,
-      [chosenJokerPosition]: { ...chosenTile, letter: letter },
+      [chosenJokerPosition]: { ...chosenTile, letter: letter, isPlayed: true },
     });
     setRackTiles(
       rackTiles.map((rackTile, index) =>
