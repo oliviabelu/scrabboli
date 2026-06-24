@@ -18,6 +18,8 @@ import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
 import TilebagProgress from "@/components/TilebagProgress";
 import SwapTiles from "@/components/SwapTiles";
+import { AnimatePresence } from "framer-motion";
+
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
   const [tilebag, setTilebag] = useState(createTilebag);
@@ -683,14 +685,16 @@ export default function HomePage() {
         onSwapTilesClick={handleSwapTilesClick}
         currentMove={currentMove}
       />
-      {isSwapTilesClick && (
-        <SwapTiles
-          rackTiles={rackTiles}
-          maxSwappingNumber={tilebag.length}
-          onExitSwap={() => setIsSwapTilesClick(false)}
-          onButtonSwap={handleButtonSwap}
-        />
-      )}
+      <AnimatePresence>
+        {isSwapTilesClick && (
+          <SwapTiles
+            rackTiles={rackTiles}
+            maxSwappingNumber={tilebag.length}
+            onExitSwap={() => setIsSwapTilesClick(false)}
+            onButtonSwap={handleButtonSwap}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }

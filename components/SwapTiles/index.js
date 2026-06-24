@@ -66,7 +66,12 @@ export default function SwapTiles({
   }
 
   return (
-    <StyledContainer>
+    <StyledContainer
+      initial={{ y: "100%" }}
+      animate={{ y: 0 }}
+      exit={{ y: "100%" }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+    >
       <StyledExitButton type="button" onClick={onExitSwap}>
         <CircleX />
       </StyledExitButton>
