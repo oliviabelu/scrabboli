@@ -5,8 +5,13 @@ export default function Rack({ rackTiles, chosenTile, handleClick }) {
   return (
     <StyledTileList>
       {rackTiles.map((rackTile, index) => {
-        const category =
-          rackTile.isPlayed || rackTile.isEmpty ? "emptyTile" : "tile";
+        const emptyTile = rackTile.isPlayed || rackTile.isEmpty;
+        const swapField = typeof rackTile === "number"; //type "number" means, that the swap tile is empty
+        const category = emptyTile
+          ? "emptyTile"
+          : swapField
+            ? "swapField"
+            : "tile";
         const letter = category === "tile" ? rackTile.letter : "";
         const value = category === "tile" ? rackTile.value : "";
         const isChosenTile = index === chosenTile?.index;

@@ -33,7 +33,8 @@ export default createGlobalStyle`
 --cell-triple-word: #fcd3dd;
 --cell-triple-word-color: #38000e; //#b1445f;
 
---off-white: #fdf9f5;
+--off-white: hsl(30, 67%, 98%);
+--off-white-less: hsla(30, 60%, 98%, 0.25);
 }
   *,
   *::before,

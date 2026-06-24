@@ -7,7 +7,9 @@ export default function Brick({
   isChosenTile,
   onClick,
 }) {
-  const isTile = ["tile", "boardTile", "emptyTile"].includes(category);
+  const isTile = ["tile", "boardTile", "emptyTile", "swapField"].includes(
+    category
+  );
   const isJokerLetter = category === "jokerLetter";
   const isJoker = tileLetter === "?";
   return (

@@ -84,7 +84,9 @@ export const StyledBrick = styled.button`
   ${(props) =>
     props.$category === "emptyTile" &&
     css`
-      background-color: var(--tile-empty);
+      background: none;
+
+      backdrop-filter: blur(10px);
       box-shadow: none;
 
       width: var(--tile-size);
@@ -104,6 +106,18 @@ export const StyledBrick = styled.button`
       grid-template-rows: 1fr 2fr;
 
       padding-bottom: 0.5em;
+    `}
+
+    ${(props) =>
+    props.$category === "swapField" &&
+    css`
+      background-color: var(--cell);
+      border: inset 2px grey;
+
+      width: var(--tile-size);
+      height: var(--tile-size);
+
+      margin: var(--tile-margin);
     `}
 
   ${(props) =>

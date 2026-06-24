@@ -17,6 +17,9 @@ import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
 import TilebagProgress from "@/components/TilebagProgress";
+import SwapTiles from "@/components/SwapTiles";
+import { AnimatePresence } from "framer-motion";
+
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
   const [tilebag, setTilebag] = useState(createTilebag);
@@ -27,6 +30,7 @@ export default function HomePage() {
   const [chosenJokerPosition, setChosenJokerPosition] = useState(null);
   const [isFirstWord, setIsFirstWord] = useState(true);
   const [score, setScore] = useState(0);
+  const [isSwapTilesClick, setIsSwapTilesClick] = useState(false);
 
   //for later, when data is needed
   //const { data: gameData, isLoading, error } = useSWR("/api/games");
@@ -72,7 +76,10 @@ export default function HomePage() {
         newRackTiles[index].value === boardTile.value &&
         newRackTiles[index].isPlayed === true
       ) {
-        newRackTiles[index].isPlayed = false;
+        newRackTiles[index] = {
+          ...newRackTiles[index],
+          isPlayed: false,
+        };
       } else {
         const newIndex = newRackTiles.findIndex(
           (newRackTile) =>
@@ -84,7 +91,10 @@ export default function HomePage() {
           newRackTiles[index],
           newRackTiles[newIndex],
         ];
-        newRackTiles[index].isPlayed = false;
+        newRackTiles[index] = {
+          ...newRackTiles[index],
+          isPlayed: false,
+        };
       }
       setRackTiles(newRackTiles);
 
@@ -612,6 +622,30 @@ export default function HomePage() {
     setTilebag(currentTilebag);
   }
 
+  function handleButtonSwap(rackTilesForSwap) {
+    const { drawnTiles, currentTilebag } = drawTilesFromTilebag(
+      rackTilesForSwap,
+      tilebag
+    );
+
+    rackTilesForSwap.forEach(
+      (tile) =>
+        tile.isPlayed === true &&
+        currentTilebag.push({ letter: tile.letter, value: tile.value })
+    );
+
+    setRackTiles(drawnTiles);
+    setTilebag(currentTilebag);
+    setIsSwapTilesClick(false);
+  }
+
+  function handleSwapTilesClick() {
+    if (currentMove.length !== 0) {
+      toast.error("Ziehe erst alle Steine zurück.");
+      return;
+    }
+    setIsSwapTilesClick(true);
+  }
   //for later
   // if (isLoading) return <p>Loading...</p>;
 
@@ -646,8 +680,19 @@ export default function HomePage() {
       <GameNavBar
         onRecall={handleRecall}
         onPlayClick={handlePlayClick}
+        onSwapTilesClick={handleSwapTilesClick}
         currentMove={currentMove}
       />
+      <AnimatePresence>
+        {isSwapTilesClick && (
+          <SwapTiles
+            rackTiles={rackTiles}
+            maxSwappingNumber={tilebag.length}
+            onExitSwap={() => setIsSwapTilesClick(false)}
+            onButtonSwap={handleButtonSwap}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }
