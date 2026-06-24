@@ -1,13 +1,21 @@
 import { StyledContainer, StyledExitButton } from "./SwapTiles.styled";
 import { CircleX } from "lucide-react";
 import Rack from "../Rack";
-import { TILENUMBERS } from "@/constants/gameConstants";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 
-export default function SwapTiles({ rackTiles, onExitSwap, onButtonSwap }) {
+export default function SwapTiles({
+  rackTiles,
+  maxSwappingNumber,
+  onExitSwap,
+  onButtonSwap,
+}) {
   const [rackTilesForSwap, setRackTilesForSwap] = useState([...rackTiles]);
-  const [swappingTiles, setSwappingTiles] = useState([...TILENUMBERS]);
+  const initialSwappingTiles = Array.from(
+    { length: Math.min(7, maxSwappingNumber) },
+    (_, i) => i + 1
+  );
+  const [swappingTiles, setSwappingTiles] = useState(initialSwappingTiles);
 
   function handleTileClick(tile, index) {
     const swapIndex = swappingTiles.findIndex(
@@ -23,7 +31,7 @@ export default function SwapTiles({ rackTiles, onExitSwap, onButtonSwap }) {
 
     setRackTilesForSwap((prevRackTiles) => {
       const updated = [...prevRackTiles];
-      updated[index] = { ...updated[index], isEmpty: true };
+      updated[index] = { ...updated[index], isPlayed: true };
       return updated;
     });
   }
@@ -37,10 +45,10 @@ export default function SwapTiles({ rackTiles, onExitSwap, onButtonSwap }) {
         (update) =>
           update.letter === tile.letter &&
           update.value === tile.value &&
-          update.isEmpty === true
+          update.isPlayed === true
       );
       if (tileIndex === -1) return updated;
-      updated[tileIndex] = { ...updated[tileIndex], isEmpty: false };
+      updated[tileIndex] = { ...updated[tileIndex], isPlayed: false };
       return updated;
     });
 
@@ -49,7 +57,7 @@ export default function SwapTiles({ rackTiles, onExitSwap, onButtonSwap }) {
       const updatedFiltered = updated.filter(
         (update, updateIndex) => updateIndex !== index
       );
-      return TILENUMBERS.map((number, index) =>
+      return initialSwappingTiles.map((number, index) =>
         typeof updatedFiltered[index] === "object"
           ? updatedFiltered[index]
           : number
@@ -68,7 +76,7 @@ export default function SwapTiles({ rackTiles, onExitSwap, onButtonSwap }) {
         variant="outlined"
         type="button"
         color={`$var(--tile)`}
-        onClick={() => onButtonSwap(swappingTiles)}
+        onClick={() => onButtonSwap(rackTilesForSwap)}
       >
         Tauschen
       </Button>

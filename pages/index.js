@@ -74,7 +74,7 @@ export default function HomePage() {
         newRackTiles[index].value === boardTile.value &&
         newRackTiles[index].isPlayed === true
       ) {
-        newRackTiles[index].isPlayed = {
+        newRackTiles[index] = {
           ...newRackTiles[index],
           isPlayed: false,
         };
@@ -89,7 +89,7 @@ export default function HomePage() {
           newRackTiles[index],
           newRackTiles[newIndex],
         ];
-        newRackTiles[index].isPlayed = {
+        newRackTiles[index] = {
           ...newRackTiles[index],
           isPlayed: false,
         };
@@ -620,7 +620,32 @@ export default function HomePage() {
     setTilebag(currentTilebag);
   }
 
-  function handleButtonSwap() {}
+  function handleButtonSwap(rackTilesForSwap) {
+    console.log(rackTilesForSwap);
+    const { drawnTiles, currentTilebag } = drawTilesFromTilebag(
+      rackTilesForSwap,
+      tilebag
+    );
+
+    rackTilesForSwap.forEach(
+      (tile) =>
+        tile.isPlayed === true &&
+        currentTilebag.push({ letter: tile.letter, value: tile.value })
+    );
+
+    setRackTiles(drawnTiles);
+    setTilebag(currentTilebag);
+    setIsSwapTilesClick(false);
+  }
+
+  function handleSwapTilesClick() {
+    console.log;
+    if (currentMove.length !== 0) {
+      toast.error("Ziehe erst alle Steine zurück.");
+      return;
+    }
+    setIsSwapTilesClick(true);
+  }
   //for later
   // if (isLoading) return <p>Loading...</p>;
 
@@ -655,12 +680,13 @@ export default function HomePage() {
       <GameNavBar
         onRecall={handleRecall}
         onPlayClick={handlePlayClick}
-        onSwapTilesClick={() => setIsSwapTilesClick(true)}
+        onSwapTilesClick={handleSwapTilesClick}
         currentMove={currentMove}
       />
       {isSwapTilesClick && (
         <SwapTiles
           rackTiles={rackTiles}
+          maxSwappingNumber={tilebag.length}
           onExitSwap={() => setIsSwapTilesClick(false)}
           onButtonSwap={handleButtonSwap}
         />
