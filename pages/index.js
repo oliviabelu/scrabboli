@@ -17,6 +17,7 @@ import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
 import TilebagProgress from "@/components/TilebagProgress";
+import SwapTiles from "@/components/SwapTiles";
 export default function HomePage() {
   const [wordSet, setWordSet] = useState(null);
   const [tilebag, setTilebag] = useState(createTilebag);
@@ -27,6 +28,7 @@ export default function HomePage() {
   const [chosenJokerPosition, setChosenJokerPosition] = useState(null);
   const [isFirstWord, setIsFirstWord] = useState(true);
   const [score, setScore] = useState(0);
+  const [isSwapTilesClick, setIsSwapTilesClick] = useState(false);
 
   //for later, when data is needed
   //const { data: gameData, isLoading, error } = useSWR("/api/games");
@@ -72,7 +74,10 @@ export default function HomePage() {
         newRackTiles[index].value === boardTile.value &&
         newRackTiles[index].isPlayed === true
       ) {
-        newRackTiles[index].isPlayed = false;
+        newRackTiles[index].isPlayed = {
+          ...newRackTiles[index],
+          isPlayed: false,
+        };
       } else {
         const newIndex = newRackTiles.findIndex(
           (newRackTile) =>
@@ -84,7 +89,10 @@ export default function HomePage() {
           newRackTiles[index],
           newRackTiles[newIndex],
         ];
-        newRackTiles[index].isPlayed = false;
+        newRackTiles[index].isPlayed = {
+          ...newRackTiles[index],
+          isPlayed: false,
+        };
       }
       setRackTiles(newRackTiles);
 
@@ -612,6 +620,7 @@ export default function HomePage() {
     setTilebag(currentTilebag);
   }
 
+  function handleButtonSwap() {}
   //for later
   // if (isLoading) return <p>Loading...</p>;
 
@@ -646,8 +655,16 @@ export default function HomePage() {
       <GameNavBar
         onRecall={handleRecall}
         onPlayClick={handlePlayClick}
+        onSwapTilesClick={() => setIsSwapTilesClick(true)}
         currentMove={currentMove}
       />
+      {isSwapTilesClick && (
+        <SwapTiles
+          rackTiles={rackTiles}
+          onExitSwap={() => setIsSwapTilesClick(false)}
+          onButtonSwap={handleButtonSwap}
+        />
+      )}
     </>
   );
 }
