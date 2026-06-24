@@ -128,3 +128,17 @@ export const ALPHABET = [
   "Ö",
   "Ü",
 ];
+
+export const GREETINGS = [
+  "Hey",
+  "Hallo",
+  "Hallihallo",
+  "Hello again",
+  "Buon Giorno",
+  "Buen Dia",
+  "Huhuu",
+  "Salut",
+  "Hallöchen",
+  "Servus",
+  "Grüß Gott",
+];

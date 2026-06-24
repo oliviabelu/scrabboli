@@ -18,8 +18,8 @@ export default createGlobalStyle`
 
 --tile-empty : var(--off-white); // #ffffff;
 
---cell-start: #fff4b3;
---cell-start-color: #3b3200;
+--cell-start:  #6ddacb; // #fff4b3;
+--cell-start-color:  #2d5a54;//var(--off-white);//#3b3200;
 
 --cell-double-letter: #faf4c1;
 --cell-double-letter-color: #463b00; //#ccae03;
