@@ -84,7 +84,7 @@ export const StyledBrick = styled.button`
   ${(props) =>
     props.$category === "emptyTile" &&
     css`
-      background: none; // var(--tile-empty);
+      background: none;
 
       backdrop-filter: blur(10px);
       box-shadow: none;

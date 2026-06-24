@@ -6,7 +6,7 @@ export default function Rack({ rackTiles, chosenTile, handleClick }) {
     <StyledTileList>
       {rackTiles.map((rackTile, index) => {
         const emptyTile = rackTile.isPlayed || rackTile.isEmpty;
-        const swapField = typeof rackTile === "number";
+        const swapField = typeof rackTile === "number"; //type "number" means, that the swap tile is empty
         const category = emptyTile
           ? "emptyTile"
           : swapField

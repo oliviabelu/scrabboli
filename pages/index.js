@@ -623,7 +623,6 @@ export default function HomePage() {
   }
 
   function handleButtonSwap(rackTilesForSwap) {
-    console.log(rackTilesForSwap);
     const { drawnTiles, currentTilebag } = drawTilesFromTilebag(
       rackTilesForSwap,
       tilebag
@@ -641,7 +640,6 @@ export default function HomePage() {
   }
 
   function handleSwapTilesClick() {
-    console.log;
     if (currentMove.length !== 0) {
       toast.error("Ziehe erst alle Steine zurück.");
       return;
