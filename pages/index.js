@@ -41,7 +41,7 @@ export default function HomePage() {
 
       if (!playerResult.ok) {
         toast.error("Name nicht gefunden.");
-        setUser("initial");
+
         return;
       }
       const player = await playerResult.json();
