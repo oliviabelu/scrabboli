@@ -1,12 +1,12 @@
 import { getRandomGreeting } from "@/utils/gameLogic";
-import { StyledIntroduction } from "./Games.styled";
+import { StyledIntroduction } from "./Overview.styled";
 import Link from "next/link";
 import useSWR from "swr";
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Router, { useRouter } from "next/router";
 
-export default function Games() {
+export default function Overview() {
   const [playerId, setPlayerId] = useState(null);
   const greeting = getRandomGreeting();
   const router = useRouter;

@@ -11,7 +11,7 @@ import {
   getLettersFromCell,
   calculateWordScore,
 } from "@/utils/gameLogic";
-import { StyledGameInfo } from "./NewGame.styled";
+import { StyledGameInfo } from "./PlayGame.styled";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
@@ -20,21 +20,31 @@ import TilebagProgress from "@/components/TilebagProgress";
 import SwapTiles from "@/components/SwapTiles";
 import { AnimatePresence } from "framer-motion";
 
-export default function NewGame() {
-  const [wordSet, setWordSet] = useState(null);
+export default function PlayGame() {
   const [tilebag, setTilebag] = useState(createTilebag);
-  const [cells, setCells] = useState(CATEGORIES);
-  const [chosenTile, setChosenTile] = useState(null);
+  //initial: create; ongoing: props
   const [rackTiles, setRackTiles] = useState([]);
-  const [currentMove, setCurrentMove] = useState([]);
-  const [chosenJokerPosition, setChosenJokerPosition] = useState(null);
+  //initial: create(useEffect) --> aber außerhalb als props mitgegeben
+  //ongoing: props
+  const [cells, setCells] = useState(CATEGORIES);
+  //initial: CATEGORIES; ongoing: props
+  const [gameId, setGameId] = useState(null);
+  //initial: props; ongoing: props
   const [isFirstWord, setIsFirstWord] = useState(true);
+  //initial: true; ongoing: props (sobald das erste Wort gespielt wurde false)
   const [score, setScore] = useState(0);
-  const [isSwapTilesClick, setIsSwapTilesClick] = useState(false);
+  //initial: 0, ongoing: props
 
-  console.log(rackTiles);
-  //for later, when data is needed
-  //const { data: gameData, isLoading, error } = useSWR("/api/games");
+  const [wordSet, setWordSet] = useState(null);
+  //wird hier über useEffect geladen, initial = ongoing
+  const [chosenTile, setChosenTile] = useState(null);
+  //null, initial = ongoing
+  const [currentMove, setCurrentMove] = useState([]);
+  //[], initial = ongoing
+  const [chosenJokerPosition, setChosenJokerPosition] = useState(null);
+  //null, initial = ongoing
+  const [isSwapTilesClick, setIsSwapTilesClick] = useState(false);
+  //false, initial = ongoing
 
   useEffect(() => {
     async function loadWords() {
@@ -46,8 +56,7 @@ export default function NewGame() {
 
         const wordArray = await response.json();
 
-        const set = new Set(wordArray); //.map((entry) => entry.word));
-
+        const set = new Set(wordArray);
         setWordSet(set);
       } catch (error) {
         console.error(error);
@@ -64,6 +73,47 @@ export default function NewGame() {
     );
     setRackTiles(drawnTiles);
     setTilebag(currentTilebag);
+  }, []);
+
+  useEffect(() => {
+    async function createGame() {
+      try {
+        const playerId = localStorage.getItem("playerId");
+
+        const gameData = {
+          status: "active",
+          players: [
+            {
+              playerId: playerId,
+              score: 0,
+              tiles: rackTiles,
+              isCurrentTurn: true,
+            },
+          ],
+          cells: [],
+          tilebag: tilebag,
+          moves: [],
+        };
+
+        const response = await fetch("/api/games", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(gameData),
+        });
+
+        if (!response.ok) {
+          toast.error("Spiel konnte nicht erstellt werden.");
+          return;
+        }
+
+        const newGame = await response.json();
+        setGameId(newGame._id);
+      } catch (error) {
+        console.error(error);
+        toast.error("Spiel konnte nicht erstellt werden.");
+      }
+    }
+    createGame();
   }, []);
 
   function handleTileClick(tile, index) {

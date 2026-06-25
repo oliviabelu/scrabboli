@@ -47,7 +47,7 @@ export default function HomePage() {
       const player = await playerResult.json();
       localStorage.setItem("playerId", player._id);
     }
-    router.push("/games");
+    router.push("/overview");
   }
 
   return (
