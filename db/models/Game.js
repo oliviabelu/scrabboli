@@ -4,36 +4,40 @@ const { Schema } = mongoose;
 const gameSchema = new Schema(
   {
     status: { type: String, required: true },
-    createdAt: { type: Date, required: true },
-    updatedAt: { type: Date, required: true },
     players: [
       {
         playerId: { type: Schema.Types.ObjectId, ref: "Player" },
         score: { type: Number },
-        tiles: [{ type: String }],
+        tiles: [
+          {
+            letter: { type: String },
+            value: { type: Number },
+          },
+        ],
         isCurrentTurn: { type: Boolean },
       },
     ],
-    board: {
-      cells: [
-        {
-          row: { type: Number },
-          column: { type: Number },
-          letter: { type: String },
-          playedBy: { type: Schema.Types.ObjectId, ref: "Player" },
-        },
-      ],
-    },
-    tilebag: [{ type: String }],
+    cells: [
+      {
+        position: { type: String, required: true },
+        value: { type: String, required: true },
+        playedBy: { type: Schema.Types.ObjectId, ref: "Player" },
+      },
+    ],
+    tilebag: [
+      {
+        letter: { type: String },
+        value: { type: Number },
+      },
+    ],
     moves: [
       {
         playerId: { type: Schema.Types.ObjectId, ref: "Player" },
         word: { type: String },
         tiles: [
           {
-            row: { type: Number },
-            column: { type: Number },
-            letter: { type: String },
+            position: { type: String },
+            value: { type: String },
           },
         ],
         score: { type: Number },

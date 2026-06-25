@@ -32,6 +32,7 @@ export default function NewGame() {
   const [score, setScore] = useState(0);
   const [isSwapTilesClick, setIsSwapTilesClick] = useState(false);
 
+  console.log(rackTiles);
   //for later, when data is needed
   //const { data: gameData, isLoading, error } = useSWR("/api/games");
 
