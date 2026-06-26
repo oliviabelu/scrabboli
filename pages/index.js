@@ -22,35 +22,45 @@ export default function HomePage() {
   }, []);
 
   async function handleCheckUser() {
-    if (!userName.trim()) return;
+    try {
+      if (!userName.trim()) return;
 
-    if (user === "unknown") {
-      const playerResponse = await fetch("/api/players", {
-        method: "POST",
-        body: JSON.stringify({ name: userName }),
-        headers: { "Content-Type": "application/json" },
-      });
-      if (!playerResponse.ok) {
-        toast.error(
-          "Der Name ist bereits vergeben. Wähle einen anderen oder eine Variation."
+      if (user === "unknown") {
+        const playerResponse = await fetch("/api/players", {
+          method: "POST",
+          body: JSON.stringify({ name: userName }),
+          headers: { "Content-Type": "application/json" },
+        });
+        if (playerResponse.status === 409) {
+          toast.error(
+            "Der Name ist bereits vergeben. Wähle einen anderen oder eine Variation."
+          );
+          return;
+        }
+        if (!playerResponse.ok) {
+          toast.error("Etwas ist schiefgelaufen. Bitte versuche es erneut.");
+          return;
+        }
+
+        const newPlayer = await playerResponse.json();
+        localStorage.setItem("playerId", newPlayer._id);
+      } else {
+        const playerResult = await fetch(
+          `/api/players?name=${encodeURIComponent(userName)}`
         );
-        return;
+
+        if (!playerResult.ok) {
+          toast.error("Name nicht gefunden.");
+
+          return;
+        }
+        const player = await playerResult.json();
+        localStorage.setItem("playerId", player._id);
       }
-
-      const newPlayer = await playerResponse.json();
-      localStorage.setItem("playerId", newPlayer._id);
-    } else {
-      const playerResult = await fetch(`/api/players?name=${userName}`);
-
-      if (!playerResult.ok) {
-        toast.error("Name nicht gefunden.");
-
-        return;
-      }
-      const player = await playerResult.json();
-      localStorage.setItem("playerId", player._id);
+      router.push("/games");
+    } catch (error) {
+      toast.error("Etwas ist schiefgelaufen. Bitte versuche es erneut.");
     }
-    router.push("/games");
   }
 
   return (
@@ -79,8 +89,7 @@ export default function HomePage() {
       ) : (
         <>
           <StyledIntroduction>
-            <p>Gib deinen Namen ein:</p>
-            <label htmlFor="userName"></label>
+            <label htmlFor="userName">Dein Name:</label>
             <input
               type="text"
               id="userName"

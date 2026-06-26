@@ -37,8 +37,6 @@ export default function Games() {
         initialTilebag
       );
 
-      const playerId = localStorage.getItem("playerId");
-
       const gameData = {
         status: "active",
         players: [
