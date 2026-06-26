@@ -3,7 +3,13 @@ import {
   TILENUMBERS,
   SPECIAL_CELL_TYPES,
   CATEGORIES,
+  GREETINGS,
 } from "@/constants/gameConstants";
+
+export function getRandomGreeting() {
+  const randomIndex = Math.floor(Math.random() * GREETINGS.length);
+  return GREETINGS[randomIndex];
+}
 
 export function drawTilesFromTilebag(tiles, tilebag) {
   const rack = !tiles ? TILENUMBERS : tiles;
