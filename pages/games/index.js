@@ -3,7 +3,7 @@ import {
   createTilebag,
   drawTilesFromTilebag,
 } from "@/utils/gameLogic";
-import { StyledIntroduction } from "./Games.styled";
+import { StyledIntroduction } from "../../components/Styling/Games.styled";
 import GamesOverview from "@/components/GamesOverview";
 import useSWR from "swr";
 import { useEffect, useState } from "react";

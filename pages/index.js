@@ -2,7 +2,10 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { StyledTitle, StyledIntroduction } from "@/components/Home/Home.styled";
+import {
+  StyledTitle,
+  StyledIntroduction,
+} from "@/components/Styling/Home.styled";
 import toast from "react-hot-toast";
 
 export default function HomePage() {
