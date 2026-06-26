@@ -1,18 +1,27 @@
 import useSWR from "swr";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PlayGame from "@/components/PlayGame";
 import { CATEGORIES } from "@/constants/gameConstants";
+import toast from "react-hot-toast";
 
 export default function GamePage() {
-  const [playerId] = useState(() => localStorage.getItem("playerId"));
+  const [playerId, setPlayerId] = useState(null);
+
+  useEffect(() => {
+    setPlayerId(localStorage.getItem("playerId"));
+  }, []);
 
   const router = useRouter();
   const { id } = router.query;
 
-  const { data: game } = useSWR(`/api/games/${id}`);
+  const {
+    data: game,
+    isLoading,
+    mutate,
+  } = useSWR(id ? `/api/games/${id}` : null);
 
-  if (!game) return <p>Laden...</p>;
+  if (!game || isLoading) return <p>Laden...</p>;
 
   const cells = { ...CATEGORIES };
 
@@ -31,6 +40,22 @@ export default function GamePage() {
           .reduce((accumulator, currentValue) => accumulator + currentValue)
       : 0;
 
+  async function saveGame(gameUpdate) {
+    try {
+      const response = await fetch(`/api/games/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(gameUpdate),
+      });
+      if (response.ok) {
+        mutate();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Spielstand konnte nicht gespeichert werden.");
+    }
+  }
+
   return (
     <PlayGame
       gameData={{
@@ -41,6 +66,7 @@ export default function GamePage() {
         isFirstWord: isFirstWord,
         score: score,
       }}
+      onSaveGame={saveGame}
     />
   );
 }

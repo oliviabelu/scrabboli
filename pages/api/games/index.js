@@ -5,7 +5,8 @@ export default async function handler(request, response) {
   await dbConnect();
   try {
     if (request.method === "GET") {
-      const games = await Game.find();
+      const { playerId } = request.query;
+      const games = await Game.find({ "players.playerId": playerId });
       return response.status(200).json(games);
     }
 

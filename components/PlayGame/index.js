@@ -21,7 +21,7 @@ import { AnimatePresence } from "framer-motion";
 import { ArrowBigLeft } from "lucide-react";
 import Link from "next/link";
 
-export default function PlayGame({ gameData }) {
+export default function PlayGame({ gameData, onSaveGame }) {
   const [tilebag, setTilebag] = useState(gameData.tilebag);
   const [rackTiles, setRackTiles] = useState(gameData.rackTiles);
   const [cells, setCells] = useState(gameData.cells);
@@ -110,6 +110,7 @@ export default function PlayGame({ gameData }) {
       ];
       setRackTiles(newRackTiles);
       setChosenTile(null);
+      onSaveGame({ "players.0.tiles": newRackTiles });
       return;
     }
 
@@ -610,13 +611,23 @@ export default function PlayGame({ gameData }) {
     setRackTiles(drawnTiles);
     setTilebag(currentTilebag);
 
+    const isGameOver =
+      currentTilebag.length === 0 && drawnTiles.every((tile) => tile.isEmpty);
+
     await saveGame(
       newCells,
       drawnTiles,
       currentTilebag,
       roundScore,
-      wordResults
+      wordResults,
+      isGameOver ? "finished" : undefined
     );
+
+    if (isGameOver) {
+      toast.success(
+        `Spiel beendet! Dein Endstand: ${score + roundScore} Punkte`
+      );
+    }
   }
 
   function handleButtonSwap(rackTilesForSwap) {
@@ -634,6 +645,7 @@ export default function PlayGame({ gameData }) {
     setRackTiles(drawnTiles);
     setTilebag(currentTilebag);
     setIsSwapTilesClick(false);
+    onSaveGame({ tilebag: currentTilebag, "players.0.tiles": drawnTiles });
   }
 
   function handleSwapTilesClick() {
@@ -649,48 +661,37 @@ export default function PlayGame({ gameData }) {
     newRackTiles,
     newTilebag,
     roundScore,
-    wordResults
+    wordResults,
+    status
   ) {
-    try {
-      const playerId = localStorage.getItem("playerId");
+    const playerId = localStorage.getItem("playerId");
 
-      const gameUpdate = {
-        cells: Object.entries(newCells)
-          .filter(
-            ([, value]) =>
-              typeof value === "string" &&
-              !Object.keys(CATEGORIES).includes([position])
-          )
-          .map(([position, value]) => ({
-            position,
-            value,
-            playedBy: playerId,
+    const gameUpdate = {
+      cells: Object.entries(newCells)
+        .filter(([, value]) => typeof value === "string" && value.includes("-"))
+        .map(([position, value]) => ({
+          position,
+          value,
+          playedBy: playerId,
+        })),
+      tilebag: newTilebag,
+      "players.0.score": score + roundScore,
+      "players.0.tiles": newRackTiles,
+      $push: {
+        moves: {
+          playerId: playerId,
+          word: wordResults.map((result) => result.word).join(", "),
+          tiles: currentMove.map((position) => ({
+            position: position,
+            value: newCells[position],
           })),
-        tilebag: newTilebag,
-        "players.0.score": score + roundScore,
-        "players.0.tiles": newRackTiles,
-        $push: {
-          moves: {
-            playerId: playerId,
-            word: wordResults.map((result) => result.word).join(", "),
-            tiles: currentMove.map((position) => ({
-              position: position,
-              value: newCells[position],
-            })),
-            score: roundScore,
-            timestamp: new Date(),
-          },
+          score: roundScore,
+          timestamp: new Date(),
         },
-      };
-      await fetch(`/api/games/${gameId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(gameUpdate),
-      });
-    } catch (error) {
-      console.error(error);
-      toast.error("Spielstand konnte nicht gespeichert werden.");
-    }
+      },
+      ...(status && { status }), //status nur aktualisieren, wenn er übergeben wurde
+    };
+    onSaveGame(gameUpdate);
   }
 
   return (

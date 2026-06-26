@@ -4,6 +4,7 @@ import {
   drawTilesFromTilebag,
 } from "@/utils/gameLogic";
 import { StyledIntroduction } from "./Games.styled";
+import GamesOverview from "@/components/GamesOverview";
 import useSWR from "swr";
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
@@ -20,8 +21,12 @@ export default function Games() {
     setPlayerId(id);
   }, []);
 
-  const { data: player, isLoading } = useSWR(
+  const { data: player, isLoading: isLoadingPlayer } = useSWR(
     playerId ? `/api/players/${playerId}` : null
+  );
+
+  const { data: games, isLoading: isLoadingGames } = useSWR(
+    playerId ? `/api/games?playerId=${playerId}` : null
   );
 
   async function handleNewGame() {
@@ -70,26 +75,30 @@ export default function Games() {
     }
   }
 
-  if (!playerId || isLoading) return <p>Laden...</p>;
+  if (!playerId || !games || isLoadingPlayer || isLoadingGames)
+    return <p>Laden...</p>;
 
   return (
-    <StyledIntroduction>
-      <Button
-        type="button"
-        variant="outlined"
-        onClick={() => {
-          localStorage.clear();
-          Router.push("/");
-        }}
-      >
-        Logout
-      </Button>
-      <h2>
-        {greeting} {player?.name}
-      </h2>
-      <Button type="button" variant="outlined" onClick={handleNewGame}>
-        Neues Spiel
-      </Button>
-    </StyledIntroduction>
+    <>
+      <StyledIntroduction>
+        <Button
+          type="button"
+          variant="outlined"
+          onClick={() => {
+            localStorage.clear();
+            Router.push("/");
+          }}
+        >
+          Logout
+        </Button>
+        <h2>
+          {greeting} {player?.name}
+        </h2>
+        <Button type="button" variant="outlined" onClick={handleNewGame}>
+          Neues Spiel
+        </Button>
+      </StyledIntroduction>
+      <GamesOverview games={games} />
+    </>
   );
 }
