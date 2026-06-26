@@ -4,7 +4,6 @@ import toast from "react-hot-toast";
 import { CATEGORIES } from "@/constants/gameConstants";
 import {
   checkConsecutiveNumbers,
-  createTilebag,
   drawTilesFromTilebag,
   splitBrickName,
   isPlayedTile,
@@ -19,32 +18,21 @@ import GameNavBar from "@/components/GameNavBar";
 import TilebagProgress from "@/components/TilebagProgress";
 import SwapTiles from "@/components/SwapTiles";
 import { AnimatePresence } from "framer-motion";
+import { ArrowBigLeft } from "lucide-react";
+import Link from "next/link";
 
-export default function PlayGame() {
-  const [tilebag, setTilebag] = useState(createTilebag);
-  //initial: create; ongoing: props
-  const [rackTiles, setRackTiles] = useState([]);
-  //initial: create(useEffect) --> aber außerhalb als props mitgegeben
-  //ongoing: props
-  const [cells, setCells] = useState(CATEGORIES);
-  //initial: CATEGORIES; ongoing: props
-  const [gameId, setGameId] = useState(null);
-  //initial: props; ongoing: props
-  const [isFirstWord, setIsFirstWord] = useState(true);
-  //initial: true; ongoing: props (sobald das erste Wort gespielt wurde false)
-  const [score, setScore] = useState(0);
-  //initial: 0, ongoing: props
-
+export default function PlayGame({ gameData }) {
+  const [tilebag, setTilebag] = useState(gameData.tilebag);
+  const [rackTiles, setRackTiles] = useState(gameData.rackTiles);
+  const [cells, setCells] = useState(gameData.cells);
+  const [gameId, setGameId] = useState(gameData.gameId);
+  const [isFirstWord, setIsFirstWord] = useState(gameData.isFirstWord);
+  const [score, setScore] = useState(gameData.score);
   const [wordSet, setWordSet] = useState(null);
-  //wird hier über useEffect geladen, initial = ongoing
   const [chosenTile, setChosenTile] = useState(null);
-  //null, initial = ongoing
   const [currentMove, setCurrentMove] = useState([]);
-  //[], initial = ongoing
   const [chosenJokerPosition, setChosenJokerPosition] = useState(null);
-  //null, initial = ongoing
   const [isSwapTilesClick, setIsSwapTilesClick] = useState(false);
-  //false, initial = ongoing
 
   useEffect(() => {
     async function loadWords() {
@@ -64,56 +52,6 @@ export default function PlayGame() {
     }
 
     loadWords();
-  }, []);
-
-  useEffect(() => {
-    const { drawnTiles, currentTilebag } = drawTilesFromTilebag(
-      undefined,
-      tilebag
-    );
-    setRackTiles(drawnTiles);
-    setTilebag(currentTilebag);
-  }, []);
-
-  useEffect(() => {
-    async function createGame() {
-      try {
-        const playerId = localStorage.getItem("playerId");
-
-        const gameData = {
-          status: "active",
-          players: [
-            {
-              playerId: playerId,
-              score: 0,
-              tiles: rackTiles,
-              isCurrentTurn: true,
-            },
-          ],
-          cells: [],
-          tilebag: tilebag,
-          moves: [],
-        };
-
-        const response = await fetch("/api/games", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(gameData),
-        });
-
-        if (!response.ok) {
-          toast.error("Spiel konnte nicht erstellt werden.");
-          return;
-        }
-
-        const newGame = await response.json();
-        setGameId(newGame._id);
-      } catch (error) {
-        console.error(error);
-        toast.error("Spiel konnte nicht erstellt werden.");
-      }
-    }
-    createGame();
   }, []);
 
   function handleTileClick(tile, index) {
@@ -276,7 +214,7 @@ export default function PlayGame() {
     setChosenJokerPosition(null);
   }
 
-  function handlePlayClick() {
+  async function handlePlayClick() {
     if (currentMove.length === 0) {
       toast.error("Lege zuerst Steine.");
       return;
@@ -461,7 +399,7 @@ export default function PlayGame() {
 
     toast.success(`${wordList} - ${roundScore} Punkte`);
 
-    finalizeMove(roundScore);
+    await finalizeMove(roundScore, wordResults);
   }
 
   function buildWords(rows, columns, dockingTiles, alignment) {
@@ -650,7 +588,7 @@ export default function PlayGame() {
     return wordSet.has(word);
   }
 
-  function finalizeMove(roundScore) {
+  async function finalizeMove(roundScore, wordResults) {
     setScore(score + roundScore);
     setIsFirstWord(false);
     const newCells = { ...cells };
@@ -671,6 +609,14 @@ export default function PlayGame() {
 
     setRackTiles(drawnTiles);
     setTilebag(currentTilebag);
+
+    await saveGame(
+      newCells,
+      drawnTiles,
+      currentTilebag,
+      roundScore,
+      wordResults
+    );
   }
 
   function handleButtonSwap(rackTilesForSwap) {
@@ -697,26 +643,67 @@ export default function PlayGame() {
     }
     setIsSwapTilesClick(true);
   }
-  //for later
-  // if (isLoading) return <p>Loading...</p>;
 
-  // if (error) {
-  //   return <h1>Oops… something went wrong.</h1>;
-  // }
-  // if (!gameData) {
-  //   return <h1>No games.</h1>;
-  // }
-  //console.log(wordSet);
+  async function saveGame(
+    newCells,
+    newRackTiles,
+    newTilebag,
+    roundScore,
+    wordResults
+  ) {
+    try {
+      const playerId = localStorage.getItem("playerId");
+
+      const gameUpdate = {
+        cells: Object.entries(newCells)
+          .filter(
+            ([, value]) =>
+              typeof value === "string" &&
+              !Object.keys(CATEGORIES).includes([position])
+          )
+          .map(([position, value]) => ({
+            position,
+            value,
+            playedBy: playerId,
+          })),
+        tilebag: newTilebag,
+        "players.0.score": score + roundScore,
+        "players.0.tiles": newRackTiles,
+        $push: {
+          moves: {
+            playerId: playerId,
+            word: wordResults.map((result) => result.word).join(", "),
+            tiles: currentMove.map((position) => ({
+              position: position,
+              value: newCells[position],
+            })),
+            score: roundScore,
+            timestamp: new Date(),
+          },
+        },
+      };
+      await fetch(`/api/games/${gameId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(gameUpdate),
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Spielstand konnte nicht gespeichert werden.");
+    }
+  }
+
   return (
     <>
+      <Link href="/games">
+        <ArrowBigLeft />
+      </Link>
       <StyledGameInfo>
         <div>Punkte: {score}</div>
         <TilebagProgress tilebag={tilebag} />
       </StyledGameInfo>
       {chosenJokerPosition && <JokerLetter onClick={handleJokerLetterClick} />}
       <Board
-        //wordSet={wordSet}
-        //gameData={gameData}
         cells={cells}
         chosenTile={chosenTile}
         handleClick={handleCellClick}

@@ -8,6 +8,12 @@ export default async function handler(request, response) {
       const games = await Game.find();
       return response.status(200).json(games);
     }
+
+    if (request.method === "POST") {
+      const game = request.body;
+      const newGame = await Game.create(game);
+      return response.status(201).json(newGame);
+    }
   } catch (error) {
     console.error(error);
     return response.status(500).json({ status: "Internal Server Error." });
