@@ -60,8 +60,6 @@ export default function Games() {
         body: JSON.stringify(gameData),
       });
 
-      console.log(response);
-
       if (!response.ok) {
         toast.error("Spiel konnte nicht erstellt werden.");
         return;
