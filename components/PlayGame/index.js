@@ -178,8 +178,6 @@ export default function PlayGame({ gameData, onSaveGame }) {
   }
 
   function handleRecall() {
-    //   const newRackTiles = [...rackTiles];
-
     setRackTiles(
       rackTiles.map((rackTile) =>
         rackTile.isPlayed && !rackTile.isEmpty
