@@ -1,8 +1,15 @@
-import { StyledContainer, StyledExitButton } from "./SwapTiles.styled";
-import { CircleX } from "lucide-react";
+import {
+  StyledContainer,
+  StyledExitButton,
+  InfoText,
+} from "./SwapTiles.styled";
+import { StyledButton } from "../Buttons/Buttons.styled";
+import { ThemeProvider } from "@mui/material/styles";
+import Stack from "@mui/material/Stack";
+import CloseIcon from "@mui/icons-material/Close";
 import Rack from "../Rack";
-import Button from "@mui/material/Button";
 import { useState } from "react";
+import { theme } from "@/styles";
 
 export default function SwapTiles({
   rackTiles,
@@ -73,18 +80,26 @@ export default function SwapTiles({
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
     >
       <StyledExitButton type="button" onClick={onExitSwap}>
-        <CircleX />
+        <CloseIcon />
       </StyledExitButton>
+      <InfoText>
+        Klicke auf die Buchstaben, die du austauschen möchtest.
+      </InfoText>
       <Rack rackTiles={rackTilesForSwap} handleClick={handleTileClick} />
       <Rack rackTiles={swappingTiles} handleClick={handleSwapTileClick} />
-      <Button
-        variant="outlined"
-        type="button"
-        color={`$var(--tile)`}
-        onClick={() => onButtonSwap(rackTilesForSwap)}
-      >
-        Tauschen
-      </Button>
+
+      <ThemeProvider theme={theme}>
+        <Stack direction="row" sx={{ justifyContent: "center" }}>
+          <StyledButton
+            variant="outlined"
+            type="button"
+            color="mainColor"
+            onClick={() => onButtonSwap(rackTilesForSwap)}
+          >
+            Tauschen
+          </StyledButton>
+        </Stack>
+      </ThemeProvider>
     </StyledContainer>
   );
 }

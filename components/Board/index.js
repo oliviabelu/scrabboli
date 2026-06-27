@@ -19,9 +19,10 @@ export default function Board({ cells, chosenTile, handleClick }) {
 
           const isChosenTile = key === chosenTile;
 
-          const category =
-            isBoardTile || isPlayedBoardTile
-              ? "boardTile"
+          const category = isBoardTile
+            ? "boardTile"
+            : isPlayedBoardTile
+              ? "playedBoardTile"
               : (cellValue ?? null);
 
           const [tileLetter, tileValue] = isPlayedBoardTile
