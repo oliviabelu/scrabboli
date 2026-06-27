@@ -10,6 +10,8 @@ import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import Router, { useRouter } from "next/router";
 import toast from "react-hot-toast";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function Games() {
   const [playerId, setPlayerId] = useState(null);
@@ -71,8 +73,13 @@ export default function Games() {
     }
   }
 
-  if (!playerId || !games || isLoadingPlayer || isLoadingGames)
-    return <p>Laden...</p>;
+  if (!playerId || !games || isLoadingPlayer || isLoadingGames) {
+    return (
+      <Backdrop open={true}>
+        <CircularProgress />
+      </Backdrop>
+    );
+  }
 
   return (
     <>
