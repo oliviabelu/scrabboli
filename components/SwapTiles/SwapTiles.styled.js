@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import Button from "@mui/material/Button";
 
 export const StyledContainer = styled(motion.div)`
   width: 100vw;

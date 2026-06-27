@@ -9,23 +9,14 @@ import {
   getLettersFromCell,
   calculateWordScore,
 } from "@/utils/gameLogic";
-import {
-  StyledGameInfo,
-  StyledPoints,
-  StyledScore,
-  GameWrapper,
-  StyledDivider,
-  StyledArrowBack,
-} from "./PlayGame.styled";
+import { GameWrapper, StyledDivider } from "./PlayGame.styled";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
-import TilebagProgress from "@/components/TilebagProgress";
 import SwapTiles from "@/components/SwapTiles";
 import { AnimatePresence } from "framer-motion";
-import { ArrowBigLeft } from "lucide-react";
-import Link from "next/link";
+
 import GameInfo from "../GameInfo";
 
 export default function PlayGame({ gameData, onSaveGame }) {
@@ -702,22 +693,6 @@ export default function PlayGame({ gameData, onSaveGame }) {
   return (
     <GameWrapper>
       <GameInfo score={score} lastMove={gameData.lastMove} tilebag={tilebag} />
-      {/* <StyledGameInfo>
-        <Link href="/games">
-          <StyledArrowBack />
-        </Link>
-        <StyledPoints>
-          <span>Punkte</span>
-          <StyledScore>{score}</StyledScore>
-        </StyledPoints>
-        <StyledPoints>
-          <span>Letztes gelegtes Wort</span>
-          <StyledScore>
-            {gameData.lastMove.word} ({gameData.lastMove.score})
-          </StyledScore>
-        </StyledPoints>
-        <TilebagProgress tilebag={tilebag} />
-      </StyledGameInfo> */}
       <StyledDivider />
       {chosenJokerPosition && <JokerLetter onClick={handleJokerLetterClick} />}
 

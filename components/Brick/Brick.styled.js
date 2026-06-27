@@ -53,9 +53,9 @@ export const StyledBrick = styled.button`
   font-weight: 600;
   font-size: 0.6rem;
 
-  background-color: var(--off-white); //var(--cell);
+  background-color: var(--off-white);
 
-  box-shadow: 1px 1px 3px var(--secondary); //grey;
+  box-shadow: 1px 1px 3px var(--secondary);
 
   padding: 0;
 
@@ -106,13 +106,6 @@ export const StyledBrick = styled.button`
       display: grid;
       grid-template-columns: 10% 50% 25% 15%;
       grid-template-rows: 10% 25% 50% 15%;
-      /* grid-template-columns: 2fr 1fr;
-      grid-template-rows: 25% 50% 25%; */
-
-      /* grid-template-rows: 2fr 2fr 1fr; */
-      /* align-items: center;
-      justify-content: center; */
-      //padding-bottom: 0.5em;
     `}
 
   ${(props) =>
@@ -124,13 +117,7 @@ export const StyledBrick = styled.button`
       display: grid;
       grid-template-columns: 10% 50% 25% 15%;
       grid-template-rows: 10% 25% 50% 15%;
-      /* grid-template-columns: 2fr 1fr;
-      grid-template-rows: 25% 50% 25%; */
 
-      /* grid-template-rows: 2fr 2fr 1fr; */
-      /* align-items: center;
-      justify-content: center; */
-      //padding-bottom: 0.5em;
       transform: scale(1.15);
       z-index: 1;
       box-shadow: none;

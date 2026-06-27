@@ -5,5 +5,5 @@ export const StyledBoard = styled.div`
   grid-template-columns: repeat(15, 1fr);
   padding: 0.5rem;
   background-color: var(--cell);
-  border-top-left-radius: var(--brick-border-radius);
+  border-radius: var(--brick-border-radius) 0.2rem 0.2rem 0.2rem;
 `;
