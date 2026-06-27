@@ -5,7 +5,7 @@ import PlayGame from "@/components/PlayGame";
 import { CATEGORIES } from "@/constants/gameConstants";
 import toast from "react-hot-toast";
 import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
+import { StyledCircularProgress } from "@/components/Styling/Games.styled";
 
 export default function GamePage() {
   const [playerId, setPlayerId] = useState(null);
@@ -33,7 +33,7 @@ export default function GamePage() {
   if (!game || isLoading)
     return (
       <Backdrop open={true}>
-        <CircularProgress />
+        <StyledCircularProgress />
       </Backdrop>
     );
 

@@ -49,6 +49,7 @@ export default createGlobalStyle`
 --off-white-less: hsla(30, 60%, 98%, 0.25);
 
 --secondary:  #464646;
+--error:  #e65176;
 }
   *,
   *::before,
