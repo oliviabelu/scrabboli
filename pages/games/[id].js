@@ -63,7 +63,7 @@ export default function GamePage() {
       toast.error("Spielstand konnte nicht gespeichert werden.");
     }
   }
-  console.log(game);
+
   return (
     <PlayGame
       gameData={{
@@ -73,7 +73,8 @@ export default function GamePage() {
         cells: cells,
         isFirstWord: isFirstWord,
         score: score,
-        lastMove: game.moves[game.moves.length - 1],
+        lastMove:
+          game.moves.length > 0 ? game.moves[game.moves.length - 1] : null,
       }}
       onSaveGame={saveGame}
     />

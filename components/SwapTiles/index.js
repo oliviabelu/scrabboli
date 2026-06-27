@@ -25,6 +25,7 @@ export default function SwapTiles({
   const [swappingTiles, setSwappingTiles] = useState(initialSwappingTiles);
 
   function handleTileClick(tile, index) {
+    if (tile.isPlayed === true) return;
     const swapIndex = swappingTiles.findIndex(
       (swappingTile) => typeof swappingTile === "number"
     );
