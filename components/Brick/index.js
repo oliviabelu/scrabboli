@@ -13,6 +13,7 @@ export default function Brick({
     "emptyTile",
     "swapField",
     "playedBoardTile",
+    "title",
   ].includes(category);
   const isJokerLetter = category === "jokerLetter";
   const isJoker = tileLetter === "?";

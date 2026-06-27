@@ -194,4 +194,17 @@ export const StyledBrick = styled.button`
 
       font-size: 0.9rem;
     `}
+
+        ${(props) =>
+    props.$category === "title" &&
+    css`
+      background-color: var(--tile);
+      color: white;
+
+      width: calc(var(--cell-size) * 1.5);
+      height: calc(var(--cell-size) * 1.5);
+
+      font-size: 0.9rem;
+      margin: 0.2rem;
+    `}
 `;

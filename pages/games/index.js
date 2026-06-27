@@ -4,16 +4,24 @@ import {
   drawTilesFromTilebag,
 } from "@/utils/gameLogic";
 import {
-  StyledIntroduction,
+  Wrapper,
   StyledCircularProgress,
+  StyledGreeting,
+  StyledLogoutButton,
+  StyledDivider,
 } from "../../components/Styling/Games.styled";
+import { StyledTitle } from "@/components/Styling/Home.styled";
 import GamesOverview from "@/components/GamesOverview";
 import useSWR from "swr";
 import { useEffect, useState } from "react";
-import Button from "@mui/material/Button";
+import { StyledButton } from "@/components/Buttons/Buttons.styled";
 import Router, { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Backdrop from "@mui/material/Backdrop";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "@/styles";
+import AddIcon from "@mui/icons-material/Add";
+import Brick from "@/components/Brick";
 
 export default function Games() {
   const [playerId, setPlayerId] = useState(null);
@@ -82,28 +90,43 @@ export default function Games() {
       </Backdrop>
     );
   }
-
+  const title = ["S", "C", "R", "A", "B", "B", "O", "L", "I"];
   return (
-    <>
-      <StyledIntroduction>
-        <Button
+    <Wrapper>
+      <ThemeProvider theme={theme}>
+        {/* <StyledTitle>Scrabboli</StyledTitle> */}
+        <StyledTitle>
+          {title.map((letter) => {
+            return <Brick category={"title"} tileLetter={letter} />;
+          })}
+        </StyledTitle>
+        <StyledLogoutButton
           type="button"
           variant="outlined"
+          color="mainColor"
           onClick={() => {
             localStorage.clear();
             Router.push("/");
           }}
         >
           Logout
-        </Button>
-        <h2>
+        </StyledLogoutButton>
+
+        <StyledGreeting>
           {greeting} {player?.name}
-        </h2>
-        <Button type="button" variant="outlined" onClick={handleNewGame}>
+        </StyledGreeting>
+        <StyledButton
+          type="button"
+          variant="contained"
+          color="mainColor"
+          startIcon={<AddIcon />}
+          onClick={handleNewGame}
+        >
           Neues Spiel
-        </Button>
-      </StyledIntroduction>
-      <GamesOverview games={games} />
-    </>
+        </StyledButton>
+        <StyledDivider />
+        <GamesOverview games={games} />
+      </ThemeProvider>
+    </Wrapper>
   );
 }

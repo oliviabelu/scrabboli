@@ -62,6 +62,7 @@ export default createGlobalStyle`
     padding: 0;
     font-family: system-ui; // var(--font-rubik);
     background-color: var(--off-white);
+    color: var(--secondary);
   }
 
   html {

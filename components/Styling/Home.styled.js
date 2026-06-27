@@ -5,6 +5,7 @@ export const StyledTitle = styled.h1`
   justify-content: center;
   text-transform: uppercase;
   color: var(--tile);
+  margin: 1rem 0.5rem;
 `;
 
 export const StyledIntroduction = styled.div`
