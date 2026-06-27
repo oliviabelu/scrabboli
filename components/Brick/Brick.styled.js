@@ -141,11 +141,15 @@ export const StyledBrick = styled.button`
     css`
       background-color: var(--cell-start);
       color: var(--cell-start-color);
-      font-size: 8px;
-      font-weight: 400;
+      font-weight: 600;
       text-transform: uppercase;
       overflow: hidden;
+      font-size: clamp(0.3rem, 1.4vw, 0.6rem);
+      word-break: break-all;
+      text-align: center;
+      padding: 1px;
     `}
+     
 
   ${(props) =>
     props.$category === "2B" &&
@@ -184,5 +188,10 @@ export const StyledBrick = styled.button`
     css`
       background-color: var(--tile);
       color: white;
+
+      width: calc(var(--cell-size) * 1.25);
+      height: calc(var(--cell-size) * 1.25);
+
+      font-size: 0.9rem;
     `}
 `;

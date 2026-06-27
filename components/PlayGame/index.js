@@ -26,6 +26,7 @@ export default function PlayGame({ gameData, onSaveGame }) {
   const [gameId, setGameId] = useState(gameData.gameId);
   const [isFirstWord, setIsFirstWord] = useState(gameData.isFirstWord);
   const [score, setScore] = useState(gameData.score);
+  const [lastMove, setLastMove] = useState(gameData.lastMove ?? null);
   const [wordSet, setWordSet] = useState(null);
   const [chosenTile, setChosenTile] = useState(null);
   const [currentMove, setCurrentMove] = useState([]);
@@ -92,7 +93,7 @@ export default function PlayGame({ gameData, onSaveGame }) {
       setCells(newCells);
       setCurrentMove(currentMove.filter((move) => move !== chosenTile));
       setChosenTile(null);
-
+      setChosenJokerPosition(null);
       return;
     }
 
@@ -156,6 +157,7 @@ export default function PlayGame({ gameData, onSaveGame }) {
 
     if (chosenTile) {
       if (chosenTile.letter === "?") {
+        console.log("Chosen tile cell click: ", chosenTile, cellIndex);
         setChosenJokerPosition(cellIndex);
         return;
       }
@@ -587,6 +589,10 @@ export default function PlayGame({ gameData, onSaveGame }) {
 
   async function finalizeMove(roundScore, wordResults) {
     setScore(score + roundScore);
+    setLastMove({
+      word: wordResults[0].word,
+      score: roundScore,
+    });
     setIsFirstWord(false);
     const newCells = { ...cells };
     currentMove.forEach((move) => {
@@ -692,9 +698,14 @@ export default function PlayGame({ gameData, onSaveGame }) {
 
   return (
     <GameWrapper>
-      <GameInfo score={score} lastMove={gameData.lastMove} tilebag={tilebag} />
+      <GameInfo score={score} lastMove={lastMove} tilebag={tilebag} />
       <StyledDivider />
-      {chosenJokerPosition && <JokerLetter onClick={handleJokerLetterClick} />}
+      {chosenJokerPosition && (
+        <JokerLetter
+          onClick={handleJokerLetterClick}
+          onClose={() => setChosenJokerPosition(null)}
+        />
+      )}
 
       <Board
         cells={cells}

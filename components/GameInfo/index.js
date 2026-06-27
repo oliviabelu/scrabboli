@@ -17,12 +17,14 @@ export default function GameInfo({ score, lastMove, tilebag }) {
         <span>Punkte</span>
         <StyledScore>{score}</StyledScore>
       </StyledPoints>
-      <StyledPoints>
-        <span>Letztes gelegtes Wort</span>
-        <StyledScore>
-          {lastMove.word} ({lastMove.score})
-        </StyledScore>
-      </StyledPoints>
+      {lastMove !== null && (
+        <StyledPoints>
+          <span>Letztes gelegtes Wort</span>
+          <StyledScore>
+            {lastMove.word} ({lastMove.score})
+          </StyledScore>
+        </StyledPoints>
+      )}
       <TilebagProgress tilebag={tilebag} />
     </StyledGameInfo>
   );
