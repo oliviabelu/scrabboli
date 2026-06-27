@@ -1,4 +1,3 @@
-//import useSWR from "swr";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { CATEGORIES } from "@/constants/gameConstants";
@@ -10,16 +9,15 @@ import {
   getLettersFromCell,
   calculateWordScore,
 } from "@/utils/gameLogic";
-import { StyledGameInfo } from "./PlayGame.styled";
+import { GameWrapper, StyledDivider } from "./PlayGame.styled";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
-import TilebagProgress from "@/components/TilebagProgress";
 import SwapTiles from "@/components/SwapTiles";
 import { AnimatePresence } from "framer-motion";
-import { ArrowBigLeft } from "lucide-react";
-import Link from "next/link";
+
+import GameInfo from "../GameInfo";
 
 export default function PlayGame({ gameData, onSaveGame }) {
   const [tilebag, setTilebag] = useState(gameData.tilebag);
@@ -693,26 +691,22 @@ export default function PlayGame({ gameData, onSaveGame }) {
   }
 
   return (
-    <>
-      <Link href="/games">
-        <ArrowBigLeft />
-      </Link>
-      <StyledGameInfo>
-        <div>Punkte: {score}</div>
-        <TilebagProgress tilebag={tilebag} />
-      </StyledGameInfo>
+    <GameWrapper>
+      <GameInfo score={score} lastMove={gameData.lastMove} tilebag={tilebag} />
+      <StyledDivider />
       {chosenJokerPosition && <JokerLetter onClick={handleJokerLetterClick} />}
+
       <Board
         cells={cells}
         chosenTile={chosenTile}
         handleClick={handleCellClick}
       />
+      <StyledDivider />
       <Rack
         rackTiles={rackTiles}
         chosenTile={chosenTile}
         handleClick={handleTileClick}
       />
-
       <GameNavBar
         onRecall={handleRecall}
         onPlayClick={handlePlayClick}
@@ -729,6 +723,6 @@ export default function PlayGame({ gameData, onSaveGame }) {
           />
         )}
       </AnimatePresence>
-    </>
+    </GameWrapper>
   );
 }

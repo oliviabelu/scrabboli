@@ -5,4 +5,5 @@ export const StyledTileList = styled.ul`
   display: flex;
   justify-content: center;
   padding: 0;
+  margin: 0;
 `;

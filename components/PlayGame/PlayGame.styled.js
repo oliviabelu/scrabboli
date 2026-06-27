@@ -1,8 +1,14 @@
+import Divider from "@mui/material/Divider";
 import styled from "styled-components";
 
-export const StyledGameInfo = styled.div`
+export const GameWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin: 1rem;
+  gap: 1.5rem;
+`;
+
+export const StyledDivider = styled(Divider)`
+  && {
+    margin: -0.8rem;
+  }
 `;

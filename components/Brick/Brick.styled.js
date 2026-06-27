@@ -1,13 +1,12 @@
 import styled, { css } from "styled-components";
 
 export const StyledLetter = styled.div`
-  grid-column: 1;
-  grid-row: 2;
+  grid-column: 2;
+  grid-row: 3;
   display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1;
-  padding-bottom: 0.1em;
 
   color: var(--off-white);
 
@@ -18,20 +17,22 @@ export const StyledLetter = styled.div`
     `}
 
   ${(props) =>
-    props.$category === "boardTile" &&
+    (props.$category === "boardTile" ||
+      props.$category === "playedBoardTile") &&
     css`
       font-size: 0.75rem;
     `}
 `;
 
 export const StyledValue = styled.div`
-  grid-column: 2;
-  grid-row: 1;
+  grid-column: 3;
+  grid-row: 2;
 
   color: var(--off-white);
 
   ${(props) =>
-    props.$category === "boardTile" &&
+    (props.$category === "boardTile" ||
+      props.$category === "playedBoardTile") &&
     css`
       font-size: 0.5rem;
     `}
@@ -40,7 +41,7 @@ export const StyledValue = styled.div`
 export const StyledBrick = styled.button`
   width: var(--cell-size);
   height: var(--cell-size);
-  border-radius: var(--brick-border-radius) 0;
+  border-radius: var(--brick-border-radius) 0.2rem 0.2rem 0.2rem;
   margin: var(--cell-margin);
 
   border: none;
@@ -50,10 +51,11 @@ export const StyledBrick = styled.button`
   justify-content: center;
 
   font-weight: 600;
+  font-size: 0.6rem;
 
-  background-color: var(--cell);
+  background-color: var(--off-white);
 
-  box-shadow: 1px 1px 3px grey;
+  box-shadow: 1px 1px 3px var(--secondary);
 
   padding: 0;
 
@@ -71,8 +73,8 @@ export const StyledBrick = styled.button`
       margin: var(--tile-margin);
 
       display: grid;
-      grid-template-columns: 2fr 1fr;
-      grid-template-rows: 1fr 2fr;
+      grid-template-columns: 10% 50% 25% 15%;
+      grid-template-rows: 10% 25% 50% 15%;
     `}
 
   ${(props) =>
@@ -102,17 +104,31 @@ export const StyledBrick = styled.button`
       color: white;
 
       display: grid;
-      grid-template-columns: 2fr 1fr;
-      grid-template-rows: 1fr 2fr;
+      grid-template-columns: 10% 50% 25% 15%;
+      grid-template-rows: 10% 25% 50% 15%;
+    `}
 
-      padding-bottom: 0.5em;
+  ${(props) =>
+    props.$category === "playedBoardTile" &&
+    css`
+      background-color: var(--tile);
+      color: white;
+
+      display: grid;
+      grid-template-columns: 10% 50% 25% 15%;
+      grid-template-rows: 10% 25% 50% 15%;
+
+      transform: scale(1.15);
+      z-index: 1;
+      box-shadow: none;
+      border-radius: 0.2rem;
     `}
 
     ${(props) =>
     props.$category === "swapField" &&
     css`
       background-color: var(--cell);
-      border: inset 2px grey;
+      border: inset 2px var(--off-white);
 
       width: var(--tile-size);
       height: var(--tile-size);
