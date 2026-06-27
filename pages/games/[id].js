@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import PlayGame from "@/components/PlayGame";
 import { CATEGORIES } from "@/constants/gameConstants";
 import toast from "react-hot-toast";
+import Backdrop from "@mui/material/Backdrop";
+import { StyledCircularProgress } from "@/components/Styling/Games.styled";
 
 export default function GamePage() {
   const [playerId, setPlayerId] = useState(null);
@@ -28,7 +30,12 @@ export default function GamePage() {
     };
   }, [mutate]);
 
-  if (!game || isLoading) return <p>Laden...</p>;
+  if (!game || isLoading)
+    return (
+      <Backdrop open={true}>
+        <StyledCircularProgress />
+      </Backdrop>
+    );
 
   const cells = { ...CATEGORIES };
 
