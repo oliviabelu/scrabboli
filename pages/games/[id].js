@@ -21,7 +21,7 @@ export default function GamePage() {
     mutate,
   } = useSWR(id ? `/api/games/${id}` : null);
 
-  // Cache leeren wenn Seite verlassen wird
+  //empty cash when leaving page
   useEffect(() => {
     return () => {
       mutate(undefined);
@@ -54,9 +54,7 @@ export default function GamePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(gameUpdate),
       });
-      // if (response.ok) {
-      //   mutate();
-      // }
+
       if (!response.ok) {
         toast.error("Spielstand konnte nicht gespeichert werden.");
       }
