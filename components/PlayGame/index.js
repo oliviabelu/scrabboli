@@ -70,6 +70,9 @@ export default function PlayGame({ gameData, onSaveGame }) {
           isPlayed: false,
         };
       } else {
+        console.log("originalLetter:", originalLetter);
+        console.log("boardTile:", boardTile);
+        console.log("rackTiles beim Zurücklegen:", JSON.stringify(rackTiles));
         const newIndex = newRackTiles.findIndex(
           (newRackTile) =>
             newRackTile.letter === originalLetter &&

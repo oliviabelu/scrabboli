@@ -21,6 +21,13 @@ export default function GamePage() {
     mutate,
   } = useSWR(id ? `/api/games/${id}` : null);
 
+  // Cache leeren wenn Seite verlassen wird
+  useEffect(() => {
+    return () => {
+      mutate(undefined);
+    };
+  }, [mutate]);
+
   if (!game || isLoading) return <p>Laden...</p>;
 
   const cells = { ...CATEGORIES };
@@ -47,8 +54,11 @@ export default function GamePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(gameUpdate),
       });
-      if (response.ok) {
-        mutate();
+      // if (response.ok) {
+      //   mutate();
+      // }
+      if (!response.ok) {
+        toast.error("Spielstand konnte nicht gespeichert werden.");
       }
     } catch (error) {
       console.error(error);
