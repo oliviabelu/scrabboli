@@ -54,8 +54,6 @@ export default function PlayGame({ gameData, onSaveGame }) {
   }, []);
 
   function handleTileClick(tile, index) {
-    console.log("tile:", tile);
-    console.log("rackTiles: ", rackTiles);
     if (chosenTile && typeof chosenTile === "string") {
       const boardTile = cells[chosenTile];
       const originalLetter = boardTile.value === 0 ? "?" : boardTile.letter;
@@ -71,9 +69,6 @@ export default function PlayGame({ gameData, onSaveGame }) {
           isPlayed: false,
         };
       } else {
-        console.log("originalLetter:", originalLetter);
-        console.log("boardTile:", boardTile);
-        console.log("rackTiles beim Zurücklegen:", JSON.stringify(rackTiles));
         const newIndex = newRackTiles.findIndex(
           (newRackTile) =>
             newRackTile.letter === originalLetter &&
@@ -124,7 +119,6 @@ export default function PlayGame({ gameData, onSaveGame }) {
   }
 
   function handleCellClick(row, column) {
-    console.log(row, column);
     const cellIndex = `${row}-${column}`;
     const isTile = cellIndex in cells && typeof cells[cellIndex] === "object";
 
@@ -701,7 +695,7 @@ export default function PlayGame({ gameData, onSaveGame }) {
     };
     onSaveGame(gameUpdate);
   }
-  console.log("chosenJokerPosition: ", chosenJokerPosition);
+
   return (
     <GameWrapper>
       <GameInfo score={score} lastMove={lastMove} tilebag={tilebag} />

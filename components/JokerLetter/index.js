@@ -1,4 +1,4 @@
-import { Root, Portal, Content, Anchor } from "@radix-ui/react-popover";
+import { Root, Portal } from "@radix-ui/react-popover";
 
 import CloseIcon from "@mui/icons-material/Close";
 import Brick from "../Brick";
