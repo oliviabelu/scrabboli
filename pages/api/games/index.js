@@ -6,7 +6,9 @@ export default async function handler(request, response) {
   try {
     if (request.method === "GET") {
       const { playerId } = request.query;
-      const games = await Game.find({ "players.playerId": playerId });
+      const games = await Game.find({ "players.playerId": playerId }).sort({
+        updatedAt: -1,
+      });
       return response.status(200).json(games);
     }
 

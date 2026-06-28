@@ -7,7 +7,9 @@ export default function GamesOverview({ games }) {
   return (
     <>
       <GameList title={"Angefangene Spiele"} games={activeGames} />
-      <GameList title={"Beendete Spiele"} games={finishedGames} />
+      {finishedGames.length !== 0 && (
+        <GameList title={"Beendete Spiele"} games={finishedGames} />
+      )}
     </>
   );
 }

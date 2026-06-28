@@ -41,7 +41,7 @@ export const StyledValue = styled.div`
 export const StyledBrick = styled.button`
   width: var(--cell-size);
   height: var(--cell-size);
-  border-radius: var(--brick-border-radius) 0.2rem 0.2rem 0.2rem;
+  border-radius: var(--border-radius);
   margin: var(--cell-margin);
 
   border: none;
@@ -64,7 +64,11 @@ export const StyledBrick = styled.button`
   ${(props) =>
     props.$category === "tile" &&
     css`
-      background-color: var(--tile);
+      background: linear-gradient(
+        165deg,
+        var(--tile) 0%,
+        var(--tile-gradient) 100%
+      );
       color: white;
 
       width: var(--tile-size);
@@ -100,7 +104,12 @@ export const StyledBrick = styled.button`
   ${(props) =>
     props.$category === "boardTile" &&
     css`
-      background-color: var(--tile);
+      //background-color: var(--tile);
+      background: linear-gradient(
+        165deg,
+        var(--tile) 0%,
+        var(--tile-gradient) 100%
+      );
       color: white;
 
       display: grid;
@@ -112,6 +121,7 @@ export const StyledBrick = styled.button`
     props.$category === "playedBoardTile" &&
     css`
       background-color: var(--tile);
+
       color: white;
 
       display: grid;
@@ -193,5 +203,22 @@ export const StyledBrick = styled.button`
       height: calc(var(--cell-size) * 1.25);
 
       font-size: 0.9rem;
+    `}
+
+        ${(props) =>
+    props.$category === "title" &&
+    css`
+      background: linear-gradient(
+        165deg,
+        var(--tile) 0%,
+        var(--tile-gradient) 100%
+      );
+      color: white;
+
+      width: calc(var(--cell-size) * 1.5);
+      height: calc(var(--cell-size) * 1.5);
+
+      font-size: 0.9rem;
+      margin: 0.2rem;
     `}
 `;

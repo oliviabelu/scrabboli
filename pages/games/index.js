@@ -4,19 +4,37 @@ import {
   drawTilesFromTilebag,
 } from "@/utils/gameLogic";
 import {
-  StyledIntroduction,
   StyledCircularProgress,
+  StyledGreeting,
+  StyledLogoutButton,
+  StyledDivider,
+  StyledName,
+  StyledButtonWrapper,
 } from "../../components/Styling/Games.styled";
+import {
+  StyledTitle,
+  StyledHeader,
+  StyledMain,
+} from "@/components/Styling/Home.styled";
 import GamesOverview from "@/components/GamesOverview";
 import useSWR from "swr";
 import { useEffect, useState } from "react";
-import Button from "@mui/material/Button";
+import {
+  StyledButton,
+  StyledPlainButton,
+} from "@/components/Buttons/Buttons.styled";
 import Router, { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Backdrop from "@mui/material/Backdrop";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "@/styles";
+import AddIcon from "@mui/icons-material/Add";
+import Brick from "@/components/Brick";
+import { TILES } from "@/constants/gameConstants";
 
 export default function Games() {
   const [playerId, setPlayerId] = useState(null);
+
   const greeting = getRandomGreeting();
   const router = useRouter();
 
@@ -82,28 +100,68 @@ export default function Games() {
       </Backdrop>
     );
   }
+  const playerName = player
+    ? player.name
+        .toUpperCase()
+        .split("")
+        .filter((letter) => TILES[letter] !== undefined)
+        .map((letter) => {
+          const value = TILES[letter].value;
+          return { letter: letter, value: value };
+        })
+    : [];
 
   return (
-    <>
-      <StyledIntroduction>
-        <Button
+    <ThemeProvider theme={theme}>
+      <StyledHeader>
+        <StyledTitle>Scrabboli</StyledTitle>
+      </StyledHeader>
+      <StyledMain>
+        <StyledLogoutButton
           type="button"
           variant="outlined"
+          color="mainColor"
           onClick={() => {
             localStorage.clear();
             Router.push("/");
           }}
         >
           Logout
-        </Button>
-        <h2>
-          {greeting} {player?.name}
-        </h2>
-        <Button type="button" variant="outlined" onClick={handleNewGame}>
-          Neues Spiel
-        </Button>
-      </StyledIntroduction>
-      <GamesOverview games={games} />
-    </>
+        </StyledLogoutButton>
+
+        <StyledGreeting>
+          <span>{greeting}</span>
+          <StyledName>
+            {playerName.map((letter, index) => {
+              return (
+                <Brick
+                  key={index}
+                  category={"tile"}
+                  tileLetter={letter.letter}
+                  tileValue={letter.value}
+                />
+              );
+            })}
+          </StyledName>
+        </StyledGreeting>
+        <StyledButtonWrapper>
+          <StyledPlainButton
+            type="button"
+            variant="contained"
+            color="mainColor"
+            startIcon={<AddIcon />}
+            onClick={handleNewGame}
+          >
+            Neues Spiel
+          </StyledPlainButton>
+        </StyledButtonWrapper>
+        {games.length !== 0 && (
+          <>
+            <StyledDivider />
+            <GamesOverview games={games} />
+          </>
+        )}
+      </StyledMain>
+    </ThemeProvider>
   );
 }

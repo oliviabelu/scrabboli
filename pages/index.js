@@ -5,6 +5,8 @@ import { useRouter } from "next/router";
 import {
   StyledTitle,
   StyledIntroduction,
+  StyledMain,
+  StyledHeader,
 } from "@/components/Styling/Home.styled";
 import toast from "react-hot-toast";
 
@@ -65,58 +67,64 @@ export default function HomePage() {
 
   return (
     <>
-      <StyledTitle>Scrabboli</StyledTitle>
-      {user === "initial" ? (
-        <StyledIntroduction>
-          <p>Warst du schon mal hier?</p>
-          <Stack direction="row" spacing={2}>
-            <Button
-              type="button"
-              variant="outlined"
-              onClick={() => setUser("known")}
-            >
-              Ja
-            </Button>
-            <Button
-              type="button"
-              variant="outlined"
-              onClick={() => setUser("unknown")}
-            >
-              Nein
-            </Button>
-          </Stack>
-        </StyledIntroduction>
-      ) : (
-        <>
+      <StyledHeader>
+        <StyledTitle>Scrabboli</StyledTitle>
+      </StyledHeader>
+      <StyledMain>
+        {user === "initial" ? (
           <StyledIntroduction>
-            <label htmlFor="userName">Dein Name:</label>
-            <input
-              type="text"
-              id="userName"
-              name="userName"
-              value={userName}
-              onChange={(event) => setUserName(event.target.value)}
-              onKeyDown={(event) => event.key === "Enter" && handleCheckUser()}
-            ></input>
-            <Stack direction="row" spacing={1}>
+            <p>Warst du schon mal hier?</p>
+            <Stack direction="row" spacing={2}>
               <Button
                 type="button"
                 variant="outlined"
-                onClick={() => setUser("initial")}
+                onClick={() => setUser("known")}
               >
-                Zurück
+                Ja
               </Button>
               <Button
                 type="button"
-                variant="contained"
-                onClick={handleCheckUser}
+                variant="outlined"
+                onClick={() => setUser("unknown")}
               >
-                Weiter
+                Nein
               </Button>
             </Stack>
           </StyledIntroduction>
-        </>
-      )}
+        ) : (
+          <>
+            <StyledIntroduction>
+              <label htmlFor="userName">Dein Name:</label>
+              <input
+                type="text"
+                id="userName"
+                name="userName"
+                value={userName}
+                onChange={(event) => setUserName(event.target.value)}
+                onKeyDown={(event) =>
+                  event.key === "Enter" && handleCheckUser()
+                }
+              ></input>
+              <Stack direction="row" spacing={1}>
+                <Button
+                  type="button"
+                  variant="outlined"
+                  onClick={() => setUser("initial")}
+                >
+                  Zurück
+                </Button>
+                <Button
+                  type="button"
+                  variant="contained"
+                  onClick={handleCheckUser}
+                >
+                  Weiter
+                </Button>
+              </Stack>
+            </StyledIntroduction>
+          </>
+        )}
+      </StyledMain>
     </>
   );
 }
