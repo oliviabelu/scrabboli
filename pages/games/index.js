@@ -4,17 +4,26 @@ import {
   drawTilesFromTilebag,
 } from "@/utils/gameLogic";
 import {
-  Wrapper,
+  PageWrapper,
   StyledCircularProgress,
   StyledGreeting,
   StyledLogoutButton,
   StyledDivider,
+  StyledName,
+  StyledButtonWrapper,
 } from "../../components/Styling/Games.styled";
-import { StyledTitle } from "@/components/Styling/Home.styled";
+import {
+  StyledTitle,
+  StyledHeader,
+  StyledMain,
+} from "@/components/Styling/Home.styled";
 import GamesOverview from "@/components/GamesOverview";
 import useSWR from "swr";
 import { useEffect, useState } from "react";
-import { StyledButton } from "@/components/Buttons/Buttons.styled";
+import {
+  StyledButton,
+  StyledPlainButton,
+} from "@/components/Buttons/Buttons.styled";
 import Router, { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Backdrop from "@mui/material/Backdrop";
@@ -22,9 +31,11 @@ import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "@/styles";
 import AddIcon from "@mui/icons-material/Add";
 import Brick from "@/components/Brick";
+import { TILES } from "@/constants/gameConstants";
 
 export default function Games() {
   const [playerId, setPlayerId] = useState(null);
+
   const greeting = getRandomGreeting();
   const router = useRouter();
 
@@ -91,15 +102,29 @@ export default function Games() {
     );
   }
   const title = ["S", "C", "R", "A", "B", "B", "O", "L", "I"];
+  const playerName = player
+    ? player.name
+        .toUpperCase()
+        .split("")
+        .filter((letter) => TILES[letter] !== undefined)
+        .map((letter) => {
+          const value = TILES[letter].value;
+          return { letter: letter, value: value };
+        })
+    : [];
+
   return (
-    <Wrapper>
-      <ThemeProvider theme={theme}>
-        {/* <StyledTitle>Scrabboli</StyledTitle> */}
-        <StyledTitle>
-          {title.map((letter) => {
-            return <Brick category={"title"} tileLetter={letter} />;
+    <ThemeProvider theme={theme}>
+      {/* <PageWrapper> */}
+      <StyledHeader>
+        <StyledTitle>Scrabboli</StyledTitle>
+      </StyledHeader>
+      {/* <StyledTitle>
+          {title.map((letter, index) => {
+            return <Brick key={index} category={"title"} tileLetter={letter} />;
           })}
-        </StyledTitle>
+        </StyledTitle> */}
+      <StyledMain>
         <StyledLogoutButton
           type="button"
           variant="outlined"
@@ -113,20 +138,35 @@ export default function Games() {
         </StyledLogoutButton>
 
         <StyledGreeting>
-          {greeting} {player?.name}
+          <span>{greeting}</span>
+          <StyledName>
+            {playerName.map((letter, index) => {
+              return (
+                <Brick
+                  key={index}
+                  category={"tile"}
+                  tileLetter={letter.letter}
+                  tileValue={letter.value}
+                />
+              );
+            })}
+          </StyledName>
         </StyledGreeting>
-        <StyledButton
-          type="button"
-          variant="contained"
-          color="mainColor"
-          startIcon={<AddIcon />}
-          onClick={handleNewGame}
-        >
-          Neues Spiel
-        </StyledButton>
+        <StyledButtonWrapper>
+          <StyledPlainButton
+            type="button"
+            variant="contained"
+            color="mainColor"
+            startIcon={<AddIcon />}
+            onClick={handleNewGame}
+          >
+            Neues Spiel
+          </StyledPlainButton>
+        </StyledButtonWrapper>
         <StyledDivider />
         <GamesOverview games={games} />
-      </ThemeProvider>
-    </Wrapper>
+      </StyledMain>
+      {/* </PageWrapper> */}
+    </ThemeProvider>
   );
 }

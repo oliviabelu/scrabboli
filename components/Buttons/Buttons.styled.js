@@ -15,3 +15,13 @@ export const StyledButton = styled(Button)`
     ); // Schriftgröße passt sich ans Gerät an
   }
 `;
+
+export const StyledPlainButton = styled(StyledButton)`
+  && {
+    background: linear-gradient(
+      165deg,
+      var(--tile) 0%,
+      var(--tile-gradient) 100%
+    );
+  }
+`;

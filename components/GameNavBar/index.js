@@ -3,7 +3,7 @@ import SwapVertIcon from "@mui/icons-material/SwapVert";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { theme } from "@/styles";
 import { NavBarContainer, StyledStack } from "./GameNavBar.styled";
-import { StyledButton } from "../Buttons/Buttons.styled";
+import { StyledButton, StyledPlainButton } from "../Buttons/Buttons.styled";
 
 export default function GameNavBar({
   onRecall,
@@ -34,14 +34,14 @@ export default function GameNavBar({
           >
             tauschen
           </StyledButton>
-          <StyledButton
+          <StyledPlainButton
             variant="contained"
             color="mainColor"
             type="button"
             onClick={onPlayClick}
           >
             spielen
-          </StyledButton>
+          </StyledPlainButton>
         </StyledStack>
       </ThemeProvider>
     </NavBarContainer>

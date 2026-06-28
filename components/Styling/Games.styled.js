@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { CircularProgress } from "@mui/material";
 import Divider from "@mui/material/Divider";
-import { StyledButton } from "../Buttons/Buttons.styled";
+import { StyledButton, StyledPlainButton } from "../Buttons/Buttons.styled";
 
 export const StyledIntroduction = styled.div`
   display: flex;
@@ -22,19 +22,19 @@ export const StyledHead = styled.div`
 `;
 
 export const StyledGreeting = styled.h2`
-  //justify-self: center;
-`;
-export const StyledLogoutButton = styled(StyledButton)`
-  align-self: flex-end;
-`;
-
-export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+export const StyledLogoutButton = styled(StyledButton)`
+  align-self: flex-start;
+  position: relative;
+`;
 
-  margin-left: 1.25rem;
-  margin-right: 1.25rem;
+export const StyledButtonWrapper = styled.div`
+  position: sticky;
+  top: calc(var(--title-height) + 1rem);
+  align-self: flex-end;
 `;
 
 export const StyledDivider = styled(Divider)`
@@ -44,4 +44,10 @@ export const StyledDivider = styled(Divider)`
     margin-top: 1.5rem;
     opacity: 0.5;
   }
+`;
+
+export const StyledName = styled.span`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 `;
