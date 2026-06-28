@@ -47,9 +47,7 @@ export const StyledIntroduction = styled.div`
 `;
 
 export const StyledMain = styled.main`
-  margin-top: var(--title-height);
-
-  /* top: var(--title-height); */
+  margin-top: calc(var(--title-height) + 0.9rem);
 
   display: flex;
   flex-direction: column;

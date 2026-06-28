@@ -10,6 +10,16 @@ import {
 
 export default function GameList({ title, games }) {
   console.log(games);
+
+  function getLongestWord(moves) {
+    let longestWord = "";
+
+    moves.forEach((move) =>
+      move.word.length > longestWord.length ? (longestWord = move.word) : null
+    );
+    return longestWord;
+  }
+
   return (
     <ListWrapper>
       <StyledTopic>{title}</StyledTopic>
@@ -18,7 +28,7 @@ export default function GameList({ title, games }) {
           <StyledListItem key={game._id}>
             {console.log(game)}
             <StyledLink href={`/games/${game._id}`}>
-              Spiel {index + 1}
+              Spiel vom {new Date(game.createdAt).toLocaleDateString("de-DE")}
             </StyledLink>{" "}
             <GameWrapper>
               <span>
@@ -30,6 +40,9 @@ export default function GameList({ title, games }) {
                   <span>Punkte: {game.players[0].score}</span>
 
                   <span>Erstes Wort: {game.moves[0].word}</span>
+                  {game.moves.length > 1 && (
+                    <span>Längstes Wort: {getLongestWord(game.moves)}</span>
+                  )}
                 </>
               )}
             </GameWrapper>

@@ -4,7 +4,6 @@ import {
   drawTilesFromTilebag,
 } from "@/utils/gameLogic";
 import {
-  PageWrapper,
   StyledCircularProgress,
   StyledGreeting,
   StyledLogoutButton,
@@ -112,10 +111,9 @@ export default function Games() {
           return { letter: letter, value: value };
         })
     : [];
-
+  console.log("games: ", games);
   return (
     <ThemeProvider theme={theme}>
-      {/* <PageWrapper> */}
       <StyledHeader>
         <StyledTitle>Scrabboli</StyledTitle>
       </StyledHeader>
@@ -163,10 +161,13 @@ export default function Games() {
             Neues Spiel
           </StyledPlainButton>
         </StyledButtonWrapper>
-        <StyledDivider />
-        <GamesOverview games={games} />
+        {games.length !== 0 && (
+          <>
+            <StyledDivider />
+            <GamesOverview games={games} />
+          </>
+        )}
       </StyledMain>
-      {/* </PageWrapper> */}
     </ThemeProvider>
   );
 }
