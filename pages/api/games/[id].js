@@ -23,6 +23,10 @@ export default async function handler(request, response) {
       }
       return response.status(200).json(updatedGame);
     }
+    if (request.method === "DELETE") {
+      await Game.findByIdAndDelete(id);
+      return response.status(200).json({ status: "Success!" });
+    }
   } catch (error) {
     console.error(error);
     return response.status(500).json({ status: "Internal Server Error." });

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { CircularProgress } from "@mui/material";
 import Divider from "@mui/material/Divider";
-import { StyledButton, StyledPlainButton } from "../Buttons/Buttons.styled";
+import { StyledButton } from "../Buttons/Buttons.styled";
 
 export const StyledIntroduction = styled.div`
   display: flex;

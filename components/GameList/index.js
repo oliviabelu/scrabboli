@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   StyledTopic,
   StyledList,
@@ -9,8 +8,6 @@ import {
 } from "./GameList.styled";
 
 export default function GameList({ title, games }) {
-  console.log(games);
-
   function getLongestWord(moves) {
     let longestWord = "";
 
@@ -24,15 +21,14 @@ export default function GameList({ title, games }) {
     <ListWrapper>
       <StyledTopic>{title}</StyledTopic>
       <StyledList>
-        {games.map((game, index) => (
+        {games.map((game) => (
           <StyledListItem key={game._id}>
-            {console.log(game)}
             <StyledLink href={`/games/${game._id}`}>
               Spiel vom {new Date(game.createdAt).toLocaleDateString("de-DE")}
             </StyledLink>{" "}
             <GameWrapper>
               <span>
-                Anzahl gespielter Wörter:{" "}
+                Anzahl gespielter Wörter:
                 {game.moves.length === 0 ? 0 : game.moves.length}
               </span>
               {game.moves.length !== 0 && (

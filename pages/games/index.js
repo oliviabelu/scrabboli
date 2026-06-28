@@ -100,7 +100,6 @@ export default function Games() {
       </Backdrop>
     );
   }
-  const title = ["S", "C", "R", "A", "B", "B", "O", "L", "I"];
   const playerName = player
     ? player.name
         .toUpperCase()
@@ -111,17 +110,12 @@ export default function Games() {
           return { letter: letter, value: value };
         })
     : [];
-  console.log("games: ", games);
+
   return (
     <ThemeProvider theme={theme}>
       <StyledHeader>
         <StyledTitle>Scrabboli</StyledTitle>
       </StyledHeader>
-      {/* <StyledTitle>
-          {title.map((letter, index) => {
-            return <Brick key={index} category={"title"} tileLetter={letter} />;
-          })}
-        </StyledTitle> */}
       <StyledMain>
         <StyledLogoutButton
           type="button"

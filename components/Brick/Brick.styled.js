@@ -41,9 +41,7 @@ export const StyledValue = styled.div`
 export const StyledBrick = styled.button`
   width: var(--cell-size);
   height: var(--cell-size);
-  border-radius: var(
-    --border-radius
-  ); //var(--brick-border-radius) 0.2rem 0.2rem 0.2rem;
+  border-radius: var(--border-radius);
   margin: var(--cell-margin);
 
   border: none;
@@ -66,7 +64,6 @@ export const StyledBrick = styled.button`
   ${(props) =>
     props.$category === "tile" &&
     css`
-      //background-color: var(--tile);
       background: linear-gradient(
         165deg,
         var(--tile) 0%,
@@ -211,7 +208,6 @@ export const StyledBrick = styled.button`
         ${(props) =>
     props.$category === "title" &&
     css`
-      //background-color: var(--tile);
       background: linear-gradient(
         165deg,
         var(--tile) 0%,
