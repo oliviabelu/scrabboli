@@ -44,6 +44,7 @@ export const StyledIntroduction = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 1rem;
 `;
 
 export const StyledMain = styled.main`
@@ -60,4 +61,18 @@ export const StyledMain = styled.main`
 export const PageWrapper = styled.div`
   max-width: 480px;
   margin: 0 auto;
+`;
+
+export const StyledText = styled.p`
+  color: var(--secondary);
+`;
+
+export const StyledInput = styled.input`
+  outline: none;
+  border: 0.01rem solid var(--secondary);
+  border-radius: 2px;
+
+  &:focus {
+    border-color: var(--tile);
+  }
 `;
