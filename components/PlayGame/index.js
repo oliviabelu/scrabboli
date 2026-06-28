@@ -16,7 +16,7 @@ import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
 import SwapTiles from "@/components/SwapTiles";
 import { AnimatePresence } from "framer-motion";
-
+import { TILENUMBERS } from "@/constants/gameConstants";
 import GameInfo from "../GameInfo";
 
 export default function PlayGame({ gameData, onSaveGame }) {
@@ -696,6 +696,20 @@ export default function PlayGame({ gameData, onSaveGame }) {
     onSaveGame(gameUpdate);
   }
 
+  function handleShuffle() {
+    const oldRack = [...rackTiles];
+    const newRack = [];
+
+    for (let index = 0; index < rackTiles.length; index++) {
+      const randomNumber = Math.floor(Math.random() * oldRack.length);
+
+      newRack[index] = oldRack[randomNumber];
+      oldRack.splice(randomNumber, 1);
+    }
+    setRackTiles(newRack);
+    onSaveGame({ "players.0.tiles": newRack });
+  }
+
   return (
     <GameWrapper>
       <GameInfo score={score} lastMove={lastMove} tilebag={tilebag} />
@@ -722,6 +736,7 @@ export default function PlayGame({ gameData, onSaveGame }) {
         onRecall={handleRecall}
         onPlayClick={handlePlayClick}
         onSwapTilesClick={handleSwapTilesClick}
+        onShuffle={handleShuffle}
         currentMove={currentMove}
       />
       <AnimatePresence>
