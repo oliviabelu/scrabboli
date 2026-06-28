@@ -38,10 +38,16 @@ export const ListWrapper = styled.div`
   overflow: hidden;
 `;
 
-export const GameWrapper = styled.div`
+export const GameInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1rem;
 
   font-size: 0.7rem;
+`;
+
+export const GameHeaderWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
