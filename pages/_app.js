@@ -1,6 +1,7 @@
 import { SWRConfig } from "swr";
 import GlobalStyle from "../styles";
 import { Toaster } from "react-hot-toast";
+import { PageWrapper } from "@/components/Styling/Home.styled";
 
 const fetcher = (url) => fetch(url).then((response) => response.json());
 
@@ -36,7 +37,9 @@ export default function App({ Component, pageProps }) {
         }}
       />
       <SWRConfig value={{ fetcher }}>
-        <Component {...pageProps} />
+        <PageWrapper>
+          <Component {...pageProps} />
+        </PageWrapper>
       </SWRConfig>
     </>
   );

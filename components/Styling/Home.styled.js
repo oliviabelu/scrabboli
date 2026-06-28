@@ -56,3 +56,8 @@ export const StyledMain = styled.main`
   margin-left: 1.25rem;
   margin-right: 1.25rem;
 `;
+
+export const PageWrapper = styled.div`
+  max-width: 480px;
+  margin: 0 auto;
+`;
