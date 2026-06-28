@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { CircularProgress } from "@mui/material";
 import Divider from "@mui/material/Divider";
-import { StyledButton } from "../Buttons/Buttons.styled";
+import { StyledButton, StyledPlainButton } from "../Buttons/Buttons.styled";
 
 export const StyledIntroduction = styled.div`
   display: flex;
@@ -35,6 +35,7 @@ export const StyledButtonWrapper = styled.div`
   position: sticky;
   top: calc(var(--title-height) + 1rem);
   align-self: flex-end;
+  z-index: 10;
 `;
 
 export const StyledDivider = styled(Divider)`
@@ -50,4 +51,10 @@ export const StyledName = styled.span`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+`;
+
+export const StyledNewGameButton = styled(StyledPlainButton)`
+  && {
+    font-size: 1rem;
+  }
 `;

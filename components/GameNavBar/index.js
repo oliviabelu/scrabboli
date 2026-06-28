@@ -1,7 +1,8 @@
 import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "@/styles";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { theme } from "@/styles";
+
 import { NavBarContainer, StyledStack } from "./GameNavBar.styled";
 import { StyledButton, StyledPlainButton } from "../Buttons/Buttons.styled";
 

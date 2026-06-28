@@ -1,13 +1,15 @@
+import DeleteConfirmation from "../DeleteConfirmation";
 import {
   StyledTopic,
   StyledList,
   StyledListItem,
   StyledLink,
   ListWrapper,
-  GameWrapper,
+  GameInfoWrapper,
+  GameHeaderWrapper,
 } from "./GameList.styled";
 
-export default function GameList({ title, games }) {
+export default function GameList({ title, games, onDelete }) {
   function getLongestWord(moves) {
     let longestWord = "";
 
@@ -23,10 +25,13 @@ export default function GameList({ title, games }) {
       <StyledList>
         {games.map((game) => (
           <StyledListItem key={game._id}>
-            <StyledLink href={`/games/${game._id}`}>
-              Spiel vom {new Date(game.createdAt).toLocaleDateString("de-DE")}
-            </StyledLink>{" "}
-            <GameWrapper>
+            <GameHeaderWrapper>
+              <StyledLink href={`/games/${game._id}`}>
+                Spiel vom {new Date(game.createdAt).toLocaleDateString("de-DE")}
+              </StyledLink>
+              <DeleteConfirmation onDelete={() => onDelete(game._id)} />
+            </GameHeaderWrapper>
+            <GameInfoWrapper>
               <span>
                 Anzahl gespielter Wörter:
                 {game.moves.length === 0 ? 0 : game.moves.length}
@@ -41,7 +46,7 @@ export default function GameList({ title, games }) {
                   )}
                 </>
               )}
-            </GameWrapper>
+            </GameInfoWrapper>
           </StyledListItem>
         ))}
       </StyledList>

@@ -25,7 +25,9 @@ export default async function handler(request, response) {
     }
     if (request.method === "DELETE") {
       await Game.findByIdAndDelete(id);
-      return response.status(200).json({ status: "Success!" });
+      return response
+        .status(200)
+        .json({ status: "Game ${id} successfully deleted!" });
     }
   } catch (error) {
     console.error(error);

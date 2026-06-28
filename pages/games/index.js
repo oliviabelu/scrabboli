@@ -10,6 +10,7 @@ import {
   StyledDivider,
   StyledName,
   StyledButtonWrapper,
+  StyledNewGameButton,
 } from "../../components/Styling/Games.styled";
 import {
   StyledTitle,
@@ -19,10 +20,7 @@ import {
 import GamesOverview from "@/components/GamesOverview";
 import useSWR from "swr";
 import { useEffect, useState } from "react";
-import {
-  StyledButton,
-  StyledPlainButton,
-} from "@/components/Buttons/Buttons.styled";
+
 import Router, { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Backdrop from "@mui/material/Backdrop";
@@ -47,9 +45,11 @@ export default function Games() {
     playerId ? `/api/players/${playerId}` : null
   );
 
-  const { data: games, isLoading: isLoadingGames } = useSWR(
-    playerId ? `/api/games?playerId=${playerId}` : null
-  );
+  const {
+    data: games,
+    isLoading: isLoadingGames,
+    mutate,
+  } = useSWR(playerId ? `/api/games?playerId=${playerId}` : null);
 
   async function handleNewGame() {
     try {
@@ -111,6 +111,16 @@ export default function Games() {
         })
     : [];
 
+  async function handleDelete(id) {
+    const response = await fetch(`/api/games/${id}`, {
+      method: "DELETE",
+    });
+    if (response.ok) {
+      mutate();
+      toast.success("Spiel gelöscht.");
+    }
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <StyledHeader>
@@ -145,7 +155,7 @@ export default function Games() {
           </StyledName>
         </StyledGreeting>
         <StyledButtonWrapper>
-          <StyledPlainButton
+          <StyledNewGameButton
             type="button"
             variant="contained"
             color="mainColor"
@@ -153,12 +163,12 @@ export default function Games() {
             onClick={handleNewGame}
           >
             Neues Spiel
-          </StyledPlainButton>
+          </StyledNewGameButton>
         </StyledButtonWrapper>
         {games.length !== 0 && (
           <>
             <StyledDivider />
-            <GamesOverview games={games} />
+            <GamesOverview games={games} handleDelete={handleDelete} />
           </>
         )}
       </StyledMain>

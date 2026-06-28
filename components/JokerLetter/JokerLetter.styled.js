@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Anchor, Close, Content } from "@radix-ui/react-popover";
 
 export const StyledContent = styled(Content)`
+  z-index: 10;
   border-radius: var(--brick-border-radius) 0.2rem 0.2rem 0.2rem;
   border: solid 0.01rem var(--cell);
   backdrop-filter: blur(25px);
