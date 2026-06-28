@@ -21,13 +21,13 @@ export const StyledLink = styled(Link)`
 export const ListWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-self: flex-start;
+  align-self: center;
   background: linear-gradient(
     to bottom,
     var(--cell-triple-letter) 0%,
     transparent 100%
   );
-  width: 80vw;
+  width: 90%;
   height: auto;
 
   border-radius: var(--brick-border-radius) 0.2rem 0.2rem 0.2rem;

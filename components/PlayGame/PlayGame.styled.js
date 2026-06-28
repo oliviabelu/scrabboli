@@ -4,6 +4,8 @@ import styled from "styled-components";
 export const GameWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+
   gap: 1.5rem;
   margin-top: 1rem;
 `;

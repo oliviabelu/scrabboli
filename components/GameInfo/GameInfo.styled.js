@@ -4,6 +4,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 export const StyledGameInfo = styled.div`
   display: flex;
   flex-direction: row;
+
   justify-content: space-around;
   align-items: center;
   margin: 0;
