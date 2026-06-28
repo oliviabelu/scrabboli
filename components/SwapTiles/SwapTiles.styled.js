@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 
 export const StyledContainer = styled(motion.div)`
+  z-index: 10;
   width: 100vw;
   height: 40vh;
   position: fixed;

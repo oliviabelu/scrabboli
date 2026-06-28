@@ -1,14 +1,19 @@
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import {
   StyledTitle,
   StyledIntroduction,
   StyledMain,
   StyledHeader,
+  StyledText,
+  StyledInput,
 } from "@/components/Styling/Home.styled";
 import toast from "react-hot-toast";
+import { StyledButton } from "@/components/Buttons/Buttons.styled";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "@/styles";
 
 export default function HomePage() {
   const [user, setUser] = useState("initial"); //"initial" | "known" | "unknown"
@@ -16,12 +21,20 @@ export default function HomePage() {
 
   const router = useRouter();
 
+  const inputRef = useRef(null);
+
   useEffect(() => {
     const playerId = localStorage.getItem("playerId");
     if (playerId) {
       router.push("/games");
     }
   }, []);
+
+  useEffect(() => {
+    if (user !== "initia") {
+      inputRef.current?.focus();
+    }
+  }, [user]);
 
   async function handleCheckUser() {
     try {
@@ -66,36 +79,39 @@ export default function HomePage() {
   }
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <StyledHeader>
         <StyledTitle>Scrabboli</StyledTitle>
       </StyledHeader>
       <StyledMain>
         {user === "initial" ? (
           <StyledIntroduction>
-            <p>Warst du schon mal hier?</p>
+            <StyledText>Warst du schon mal hier?</StyledText>
+
             <Stack direction="row" spacing={2}>
-              <Button
+              <StyledButton
                 type="button"
                 variant="outlined"
+                color="mainColor"
                 onClick={() => setUser("known")}
               >
                 Ja
-              </Button>
-              <Button
+              </StyledButton>
+              <StyledButton
                 type="button"
                 variant="outlined"
+                color="mainColor"
                 onClick={() => setUser("unknown")}
               >
                 Nein
-              </Button>
+              </StyledButton>
             </Stack>
           </StyledIntroduction>
         ) : (
           <>
             <StyledIntroduction>
               <label htmlFor="userName">Dein Name:</label>
-              <input
+              <StyledInput
                 type="text"
                 id="userName"
                 name="userName"
@@ -104,27 +120,30 @@ export default function HomePage() {
                 onKeyDown={(event) =>
                   event.key === "Enter" && handleCheckUser()
                 }
-              ></input>
+                ref={inputRef}
+              ></StyledInput>
               <Stack direction="row" spacing={1}>
-                <Button
+                <StyledButton
                   type="button"
                   variant="outlined"
+                  color="mainColor"
                   onClick={() => setUser("initial")}
                 >
                   Zurück
-                </Button>
-                <Button
+                </StyledButton>
+                <StyledButton
                   type="button"
                   variant="contained"
+                  color="mainColor"
                   onClick={handleCheckUser}
                 >
                   Weiter
-                </Button>
+                </StyledButton>
               </Stack>
             </StyledIntroduction>
           </>
         )}
       </StyledMain>
-    </>
+    </ThemeProvider>
   );
 }
