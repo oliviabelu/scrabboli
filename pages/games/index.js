@@ -18,12 +18,9 @@ import {
   StyledMain,
 } from "@/components/Styling/Home.styled";
 import GamesOverview from "@/components/GamesOverview";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import { useEffect, useState } from "react";
-import {
-  StyledButton,
-  StyledPlainButton,
-} from "@/components/Buttons/Buttons.styled";
+
 import Router, { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import Backdrop from "@mui/material/Backdrop";
