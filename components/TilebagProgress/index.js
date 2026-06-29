@@ -14,7 +14,7 @@ export default function TilebagProgress({ tilebag }) {
       maxValue={102}
       styles={buildStyles({
         pathColor: "var(--tile)",
-        trailColor: "var(--cell)",
+        trailColor: "var(--cell-triple-letter)",
         textColor: "var(--tile)",
         textSize: "1.5rem",
         strokeLinecap: "round",
