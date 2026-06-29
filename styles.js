@@ -3,11 +3,16 @@ import { createTheme } from "@mui/material/styles";
 
 const TILE_COLOR = "hsl(172, 32%, 40%)";
 const TILE_COLOR_GRADIENT = "hsl(172, 32%, 50%)";
+const CAUTION_COLOR = "hsl(345, 92%, 77%)";
 
 export const theme = createTheme({
   palette: {
     mainColor: {
       main: TILE_COLOR,
+      contrastText: "#fdfaf6",
+    },
+    cautionColor: {
+      main: CAUTION_COLOR,
       contrastText: "#fdfaf6",
     },
   },

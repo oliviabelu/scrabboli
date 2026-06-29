@@ -77,7 +77,9 @@ export default function GamePage() {
         gameId: game._id,
         status: game.status,
         tilebag: game.tilebag,
-        rackTiles: game.players[0].tiles,
+        rackTiles: game.players[0].tiles.map((tile) =>
+          tile.letter === "" ? { ...tile, isEmpty: true } : tile
+        ),
         cells: cells,
         isFirstWord: isFirstWord,
         score: score,

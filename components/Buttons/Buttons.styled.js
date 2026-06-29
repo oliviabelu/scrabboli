@@ -23,5 +23,6 @@ export const StyledPlainButton = styled(StyledButton)`
       var(--tile) 0%,
       var(--tile-gradient) 100%
     );
+    border: solid 2px var(--tile);
   }
 `;

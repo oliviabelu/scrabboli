@@ -18,6 +18,7 @@ import SwapTiles from "@/components/SwapTiles";
 import { AnimatePresence } from "framer-motion";
 import GameInfo from "../GameInfo";
 import Image from "next/image";
+import ConfirmationPopup from "../ConfirmationPopup";
 
 export default function PlayGame({ gameData, onSaveGame }) {
   const [tilebag, setTilebag] = useState(gameData.tilebag);
@@ -716,7 +717,12 @@ export default function PlayGame({ gameData, onSaveGame }) {
     setRackTiles(newRack);
     onSaveGame({ "players.0.tiles": newRack });
   }
-  console.log(rackTiles);
+
+  function handlefinishGame() {
+    setStatus("finished");
+    onSaveGame({ status: "finished" });
+  }
+
   return (
     <GameWrapper>
       <GameInfo score={score} lastMove={lastMove} tilebag={tilebag} />
@@ -750,6 +756,7 @@ export default function PlayGame({ gameData, onSaveGame }) {
         onPlayClick={handlePlayClick}
         onSwapTilesClick={handleSwapTilesClick}
         onShuffle={handleShuffle}
+        onFinishGame={handlefinishGame}
         currentMove={currentMove}
         status={status}
       />

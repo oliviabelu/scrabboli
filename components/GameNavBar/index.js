@@ -3,14 +3,17 @@ import { theme } from "@/styles";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SwitchAccessShortcutOutlinedIcon from "@mui/icons-material/SwitchAccessShortcutOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 import { NavBarContainer, StyledStack } from "./GameNavBar.styled";
 import { StyledButton, StyledPlainButton } from "../Buttons/Buttons.styled";
+import ConfirmationPopup from "../ConfirmationPopup";
 
 export default function GameNavBar({
   onRecall,
   onPlayClick,
   onSwapTilesClick,
   onShuffle,
+  onFinishGame,
   currentMove,
   status,
 }) {
@@ -18,6 +21,14 @@ export default function GameNavBar({
     <NavBarContainer>
       <ThemeProvider theme={theme}>
         <StyledStack direction="row" spacing={1}>
+          {status !== "finished" && (
+            <ConfirmationPopup
+              onClick={onFinishGame}
+              content="Möchtest du dieses Spiel wirklich beenden?"
+              triggerIcon={<CloseIcon />}
+              triggerText="beenden"
+            />
+          )}
           {currentMove.length !== 0 ? (
             <StyledButton
               variant="outlined"
