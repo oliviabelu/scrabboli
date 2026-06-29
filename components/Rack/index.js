@@ -2,9 +2,10 @@ import Brick from "../Brick";
 import { StyledTileList } from "./Rack.styled";
 
 export default function Rack({ rackTiles, chosenTile, handleClick }) {
+  const visibleTiles = rackTiles.filter((tile) => tile.letter !== "");
   return (
     <StyledTileList>
-      {rackTiles.map((rackTile, index) => {
+      {visibleTiles.map((rackTile, index) => {
         const emptyTile = rackTile.isPlayed || rackTile.isEmpty;
         const swapField = typeof rackTile === "number"; //type "number" means, that the swap tile is empty
         const category = emptyTile

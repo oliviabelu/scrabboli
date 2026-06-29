@@ -12,6 +12,7 @@ export default function GameNavBar({
   onSwapTilesClick,
   onShuffle,
   currentMove,
+  status,
 }) {
   return (
     <NavBarContainer>
@@ -24,7 +25,7 @@ export default function GameNavBar({
               type="button"
               startIcon={<KeyboardArrowDownIcon />}
               onClick={onRecall}
-              // disabled={currentMove.length === 0}
+              disabled={status === "finished"}
             >
               zurückziehen
             </StyledButton>
@@ -35,6 +36,7 @@ export default function GameNavBar({
               type="button"
               startIcon={<SwitchAccessShortcutOutlinedIcon />}
               onClick={onShuffle}
+              disabled={status === "finished"}
             >
               mischen
             </StyledButton>
@@ -45,6 +47,7 @@ export default function GameNavBar({
             type="button"
             startIcon={<SwapVertIcon />}
             onClick={onSwapTilesClick}
+            disabled={status === "finished"}
           >
             tauschen
           </StyledButton>
@@ -53,6 +56,7 @@ export default function GameNavBar({
             color="mainColor"
             type="button"
             onClick={onPlayClick}
+            disabled={status === "finished"}
           >
             spielen
           </StyledPlainButton>

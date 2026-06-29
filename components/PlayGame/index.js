@@ -9,15 +9,15 @@ import {
   getLettersFromCell,
   calculateWordScore,
 } from "@/utils/gameLogic";
-import { GameWrapper, StyledDivider } from "./PlayGame.styled";
+import { GameWrapper, StyledDivider, StyledFinish } from "./PlayGame.styled";
 import Board from "@/components/Board";
 import Rack from "@/components/Rack";
 import JokerLetter from "@/components/JokerLetter";
 import GameNavBar from "@/components/GameNavBar";
 import SwapTiles from "@/components/SwapTiles";
 import { AnimatePresence } from "framer-motion";
-import { TILENUMBERS } from "@/constants/gameConstants";
 import GameInfo from "../GameInfo";
+import Image from "next/image";
 
 export default function PlayGame({ gameData, onSaveGame }) {
   const [tilebag, setTilebag] = useState(gameData.tilebag);
@@ -32,6 +32,7 @@ export default function PlayGame({ gameData, onSaveGame }) {
   const [currentMove, setCurrentMove] = useState([]);
   const [chosenJokerPosition, setChosenJokerPosition] = useState(null);
   const [isSwapTilesClick, setIsSwapTilesClick] = useState(false);
+  const [status, setStatus] = useState(gameData.status);
 
   useEffect(() => {
     async function loadWords() {
@@ -54,6 +55,7 @@ export default function PlayGame({ gameData, onSaveGame }) {
   }, []);
 
   function handleTileClick(tile, index) {
+    if (status === "finished") return;
     if (chosenTile && typeof chosenTile === "string") {
       const boardTile = cells[chosenTile];
       const originalLetter = boardTile.value === 0 ? "?" : boardTile.letter;
@@ -119,6 +121,7 @@ export default function PlayGame({ gameData, onSaveGame }) {
   }
 
   function handleCellClick(row, column) {
+    if (status === "finished") return;
     const cellIndex = `${row}-${column}`;
     const isTile = cellIndex in cells && typeof cells[cellIndex] === "object";
 
@@ -390,13 +393,16 @@ export default function PlayGame({ gameData, onSaveGame }) {
       toast.error(`${invalidWord.word} existiert nicht.`);
       return;
     }
-
-    const roundScore = wordResults.reduce((sum, { score }) => sum + score, 0);
+    const wordScore = wordResults.reduce((sum, { score }) => sum + score, 0);
+    const roundScore = currentMove.length === 7 ? wordScore + 50 : wordScore;
     const wordList = wordResults
       .map(({ word, score }) => `${word} (${score})`)
       .join(", ");
 
     toast.success(`${wordList} - ${roundScore} Punkte`);
+    if (currentMove.length === 7) {
+      toast.success("50 Extrapunkte!");
+    }
 
     await finalizeMove(roundScore, wordResults);
   }
@@ -626,6 +632,7 @@ export default function PlayGame({ gameData, onSaveGame }) {
     );
 
     if (isGameOver) {
+      setStatus("finished");
       toast.success(
         `Spiel beendet! Dein Endstand: ${score + roundScore} Punkte`
       );
@@ -709,10 +716,16 @@ export default function PlayGame({ gameData, onSaveGame }) {
     setRackTiles(newRack);
     onSaveGame({ "players.0.tiles": newRack });
   }
-
+  console.log(rackTiles);
   return (
     <GameWrapper>
       <GameInfo score={score} lastMove={lastMove} tilebag={tilebag} />
+      {status === "finished" && (
+        <StyledFinish>
+          <span> Spiel beendet!</span>{" "}
+          <Image src="/confetti.png" alt="confetti" width={30} height={30} />
+        </StyledFinish>
+      )}
       <StyledDivider />
       {chosenJokerPosition && (
         <JokerLetter
@@ -738,6 +751,7 @@ export default function PlayGame({ gameData, onSaveGame }) {
         onSwapTilesClick={handleSwapTilesClick}
         onShuffle={handleShuffle}
         currentMove={currentMove}
+        status={status}
       />
       <AnimatePresence>
         {isSwapTilesClick && (
