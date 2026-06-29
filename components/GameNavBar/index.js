@@ -3,20 +3,32 @@ import { theme } from "@/styles";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SwitchAccessShortcutOutlinedIcon from "@mui/icons-material/SwitchAccessShortcutOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 import { NavBarContainer, StyledStack } from "./GameNavBar.styled";
 import { StyledButton, StyledPlainButton } from "../Buttons/Buttons.styled";
+import ConfirmationPopup from "../ConfirmationPopup";
 
 export default function GameNavBar({
   onRecall,
   onPlayClick,
   onSwapTilesClick,
   onShuffle,
+  onFinishGame,
   currentMove,
+  status,
 }) {
   return (
     <NavBarContainer>
       <ThemeProvider theme={theme}>
         <StyledStack direction="row" spacing={1}>
+          {status !== "finished" && (
+            <ConfirmationPopup
+              onClick={onFinishGame}
+              content="Möchtest du dieses Spiel wirklich beenden?"
+              triggerIcon={<CloseIcon />}
+              triggerText="beenden"
+            />
+          )}
           {currentMove.length !== 0 ? (
             <StyledButton
               variant="outlined"
@@ -24,7 +36,7 @@ export default function GameNavBar({
               type="button"
               startIcon={<KeyboardArrowDownIcon />}
               onClick={onRecall}
-              // disabled={currentMove.length === 0}
+              disabled={status === "finished"}
             >
               zurückziehen
             </StyledButton>
@@ -35,6 +47,7 @@ export default function GameNavBar({
               type="button"
               startIcon={<SwitchAccessShortcutOutlinedIcon />}
               onClick={onShuffle}
+              disabled={status === "finished"}
             >
               mischen
             </StyledButton>
@@ -45,6 +58,7 @@ export default function GameNavBar({
             type="button"
             startIcon={<SwapVertIcon />}
             onClick={onSwapTilesClick}
+            disabled={status === "finished"}
           >
             tauschen
           </StyledButton>
@@ -53,6 +67,7 @@ export default function GameNavBar({
             color="mainColor"
             type="button"
             onClick={onPlayClick}
+            disabled={status === "finished"}
           >
             spielen
           </StyledPlainButton>

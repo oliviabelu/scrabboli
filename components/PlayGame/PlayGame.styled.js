@@ -15,3 +15,9 @@ export const StyledDivider = styled(Divider)`
     margin: -0.8rem;
   }
 `;
+
+export const StyledFinish = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;

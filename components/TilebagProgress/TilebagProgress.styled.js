@@ -4,7 +4,7 @@ import styled from "styled-components";
 export const StyledCircularProgressbarWithChildren = styled(
   CircularProgressbarWithChildren
 )`
-  width: 12vw;
+  width: 60px;
 `;
 
 export const StyledTilebagWrapper = styled.div`

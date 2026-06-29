@@ -41,6 +41,10 @@ export const StyledValue = styled.div`
 export const StyledBrick = styled.button`
   width: var(--cell-size);
   height: var(--cell-size);
+
+  max-width: 50px;
+  max-height: 50px;
+
   border-radius: var(--border-radius);
   margin: var(--cell-margin);
 
